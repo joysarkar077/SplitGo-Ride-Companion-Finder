@@ -10,8 +10,12 @@ const dbConnection = async () => {
       database: process.env.DATABASE,
       port: Number(process.env.DATABASE_PORT),
     });
+    console.log("db connected");
+    return connection;
+  } else {
+    console.log("db already connected");
+    return connection;
   }
-  return connection;
 };
 
 export default dbConnection;
