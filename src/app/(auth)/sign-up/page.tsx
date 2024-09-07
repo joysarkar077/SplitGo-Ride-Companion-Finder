@@ -96,10 +96,8 @@ const Page = () => {
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-b md:bg-gradient-to-r from-white via-blue-100 to-blue-200">
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
         <div className="text-center">
-          <h1 className="text-3xl font-bold">Join the Confession Revolution</h1>
-          <p className="mb-4">
-            Create your account and unlock a world of anonymous connections
-          </p>
+          <h1 className="text-3xl font-bold">Join the SplitGo Community</h1>
+          <p className="mb-4"></p>
         </div>
 
         <Form {...form}>
