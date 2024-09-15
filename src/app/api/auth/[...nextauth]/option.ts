@@ -53,8 +53,6 @@ export const authOptions: NextAuthOptions = {
           } else {
             throw new Error("Authorization failed due to an unexpected error");
           }
-        } finally {
-          connection.end();
         }
       },
     }),
