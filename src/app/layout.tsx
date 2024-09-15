@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import AuthProvider from "./context/AuthProvider";
 import Navbar from "@/components/custionUi/Navbar";
+import 'leaflet/dist/leaflet.css';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

@@ -18,3 +18,5 @@ CREATE TABLE users (
     video_verification_status VARCHAR(50),
     account_status VARCHAR(50)
 );
+
+SELECT * FROM ride_requests WHERE user_id = 1;

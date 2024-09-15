@@ -2,6 +2,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Image from 'next/image';
 import React from 'react';
+import 'leaflet/dist/leaflet.css';
+
 
 const page = () => {
   return (
