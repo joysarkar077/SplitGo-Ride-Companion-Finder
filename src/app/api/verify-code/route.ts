@@ -67,9 +67,5 @@ export const POST = async (request: Request) => {
       JSON.stringify({ success: false, message: "Error verifying user" }),
       { status: 500 }
     );
-  } finally {
-    if (connection) {
-      await connection.end();
-    }
   }
 };

@@ -78,9 +78,5 @@ export const POST = async (request: Request) => {
       }),
       { status: 500 }
     );
-  } finally {
-    if (connection) {
-      await connection.end();
-    }
   }
 };
