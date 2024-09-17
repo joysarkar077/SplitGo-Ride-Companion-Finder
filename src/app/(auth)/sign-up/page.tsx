@@ -36,6 +36,7 @@ const Page = () => {
   const form = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
+      name: "",
       username: "",
       email: "",
       password: "",
@@ -109,6 +110,7 @@ const Page = () => {
                 control={form.control}
                 name="username"
                 render={({ field }) => (
+
                   <FormItem>
                     <FormLabel>Username</FormLabel>
                     <FormControl>
@@ -134,6 +136,19 @@ const Page = () => {
                         {usernameMessage}
                       </p>
                     )}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Name" {...field} />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}

@@ -1,141 +1,205 @@
--- Insert data into 'users' table
 INSERT INTO
     users (
         name,
-        phone,
+        username,
         email,
         password,
-        account_status,
-        user_type,
+        phone,
         address,
-        is_verified
+        verifyCode,
+        verifyCodeExpiry,
+        verified,
+        verification_type,
+        video_verification_status,
+        account_status
     )
 VALUES (
-        'Rahim Uddin',
-        '+8801712345678',
-        'rahim@example.com',
-        'hashedpassword1',
-        'active',
-        'rider',
-        'Banani, Dhaka',
-        TRUE
+        'John Doe',
+        'john_doe',
+        'john@example.com',
+        'hashed_password',
+        '123-456-7890',
+        '123 Elm Street',
+        '123456',
+        NOW() + INTERVAL 1 DAY,
+        TRUE,
+        'email',
+        'pending',
+        'active'
     ),
     (
-        'Karim Ahmed',
-        '+8801812345678',
-        'karim@example.com',
-        'hashedpassword2',
-        'active',
-        'driver',
-        'Chittagong',
-        TRUE
+        'Jane Smith',
+        'jane_smith',
+        'jane@example.com',
+        'hashed_password',
+        '098-765-4321',
+        '456 Oak Avenue',
+        '654321',
+        NOW() + INTERVAL 1 DAY,
+        FALSE,
+        'phone',
+        'verified',
+        'suspended'
     ),
     (
-        'Fatema Begum',
-        '+8801912345678',
-        'fatema@example.com',
-        'hashedpassword3',
-        'active',
-        'rider',
-        'Sylhet',
-        FALSE
+        'Alice Johnson',
+        'alice_johnson',
+        'alice@example.com',
+        'hashed_password',
+        '555-555-5555',
+        '789 Pine Road',
+        '111222',
+        NOW() + INTERVAL 1 DAY,
+        TRUE,
+        'email',
+        'verified',
+        'active'
+    ),
+    (
+        'Bob Brown',
+        'bob_brown',
+        'bob@example.com',
+        'hashed_password',
+        '333-333-3333',
+        '101 Maple Lane',
+        '333444',
+        NOW() + INTERVAL 1 DAY,
+        TRUE,
+        'phone',
+        'pending',
+        'active'
     );
 
--- Insert data into 'ride_requests' table
 INSERT INTO
     ride_requests (
         user_id,
         origin,
         destination,
+        total_fare,
+        total_passengers,
+        total_accepted,
         ride_time,
-        ride_type,
         status
     )
 VALUES (
         1,
-        'Banani, Dhaka',
-        'Gulshan, Dhaka',
-        '2023-10-01 09:00:00',
-        'standard',
+        'Downtown',
+        'Airport',
+        50.00,
+        3,
+        2,
+        '2024-09-17 10:00:00',
         'pending'
     ),
     (
-        3,
-        'Dhanmondi, Dhaka',
-        'Uttara, Dhaka',
-        '2023-10-01 10:00:00',
-        'premium',
-        'pending'
-    );
-
--- Insert data into 'rides' table
-INSERT INTO
-    rides (
-        request_id,
-        driver_id,
-        start_time,
-        end_time,
-        fare,
-        status
-    )
-VALUES (
-        1,
         2,
-        '2023-10-01 09:05:00',
-        '2023-10-01 09:30:00',
-        250.00,
+        'University',
+        'Mall',
+        30.00,
+        2,
+        2,
+        '2024-09-17 15:00:00',
+        'accepted'
+    ),
+    (
+        3,
+        'Central Park',
+        'Stadium',
+        40.00,
+        4,
+        3,
+        '2024-09-18 09:00:00',
         'completed'
     );
 
--- Insert data into 'messages' table
+INSERT INTO
+    ride_participants (request_id, passenger_id) -- John Doe sharing his own ride
+    (10, 3),
+    (11, 2),
+    (11, 4),
+    (12, 1),
+    (12, 3),
+    (12, 4);
+-- Bob Brown sharing ride
+INSERT INTO
+    notifications (user_id, message)
+VALUES (
+        1,
+        'Your ride request to the Airport has been accepted.'
+    ),
+    (
+        2,
+        'Your ride request to the Mall has been completed.'
+    ),
+    (
+        3,
+        'Your ride request to the Stadium has been completed.'
+    ),
+    (
+        4,
+        'You have a new message regarding your ride request.'
+    );
+
 INSERT INTO
     messages (
         sender_id,
         receiver_id,
-        ride_id,
-        message_text,
-        sent_at
+        request_id,
+        message_text
     )
 VALUES (
         1,
-        2,
         1,
-        "I'm waiting at the entrance.",
-        '2023-10-01 09:02:00'
+        10,
+        'Hey, I will be at the pick-up point in 5 minutes.'
+    ),
+    (
+        3,
+        1,
+        10,
+        'Got it, I will be there on time.'
     ),
     (
         2,
-        1,
-        1,
-        "On my way.",
-        '2023-10-01 09:03:00'
+        2,
+        11,
+        'I might be a few minutes late, please wait.'
+    ),
+    (
+        4,
+        3,
+        12,
+        'I am here, where are you guys?'
     );
 
--- Insert data into 'complaints' table
 INSERT INTO
     complaints (
         user_id,
-        ride_id,
+        request_id,
         description,
         status
     )
 VALUES (
         1,
-        1,
-        "Driver was rude.",
+        10,
+        'The Passenger was late to the pick-up point.',
         'pending'
-    );
-
--- Insert data into 'notifications' table
-INSERT INTO
-    notifications (user_id, message, created_at)
-VALUES (
-        1,
-        "Your ride request has been accepted.",
-        '2023-10-01 09:01:00'
     ),
     (
         2,
-        "You have a new ride request.",
-        '2023-10-01 09:00:30'
+        11,
+        'The Passenger did not show up.',
+        'resolved'
+    ),
+    (
+        3,
+        12,
+        'The Passenger did not paid',
+        'dismissed'
+    ),
+    (
+        4,
+        10,
+        'Passenger was rude.',
+        'pending'
     );

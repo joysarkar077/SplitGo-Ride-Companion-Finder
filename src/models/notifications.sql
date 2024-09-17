@@ -1,4 +1,6 @@
 -- Create 'notifications' table
+USE splitGo;
+
 CREATE TABLE notifications (
     notification_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,

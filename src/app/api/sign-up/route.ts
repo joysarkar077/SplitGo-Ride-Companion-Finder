@@ -7,7 +7,7 @@ export const POST = async (request: Request) => {
 
   try {
     const body = await request.json();
-    const { username, password, email } = body;
+    const { name, username, password, email } = body;
 
     const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -35,14 +35,14 @@ export const POST = async (request: Request) => {
         // If the existing username is not verified, allow reuse (update the existing record)
         await connection.execute(
           "UPDATE users SET name = ?, email = ?, password = ?, verifyCode = ?, verifyCodeExpiry = ?, verified = 0 WHERE username = ?",
-          [username, email, hashedPassword, verifyCode, expiryDate, username]
+          [name, email, hashedPassword, verifyCode, expiryDate, username]
         );
       }
     } else {
       // If the username does not exist, create a new record
       await connection.execute(
-        "INSERT INTO users (username, name, email, password, verifyCode, verifyCodeExpiry, verified) VALUES (?, ?, ?, ?, ?, ?, 0)",
-        [username, username, email, hashedPassword, verifyCode, expiryDate]
+        "INSERT INTO users (name, username, email, password, verifyCode, verifyCodeExpiry, verified) VALUES (?, ?, ?, ?, ?, ?, 0)",
+        [name, username, email, hashedPassword, verifyCode, expiryDate]
       );
     }
 
