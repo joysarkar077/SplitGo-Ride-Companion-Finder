@@ -1,4 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SplitGo - Ride Companion Finder
+# Share the ride, Split the cost!
+# CSE370 Project
+# BRAC University
+
+
+This is a project for BRAC University’s CSE370 course. The project aims to help users find a ride companion who shares the same route and enables cost-sharing for the journey.
+
+## Features
+- Search for ride companions traveling the same route.
+- Share travel costs with matched companions.
+- User-friendly interface for seamless navigation.
+
+## Technologies Used
+- **Next.js** for frontend development.
+- **TypeScript** as the primary programming language.
+- **Tailwind CSS** for styling.
+
+## Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/IstiakImran/cse370_project.git
+   cd cse370_project
+
+2. Install the dependencies:
+
 
 ## Getting Started
 
