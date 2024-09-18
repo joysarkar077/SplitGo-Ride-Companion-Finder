@@ -5,12 +5,12 @@ import React from 'react';
 import 'leaflet/dist/leaflet.css';
 
 
-const page = () => {
+function page() {
   return (
     <div className='mt-auto flex flex-col justify-center items-center'>
       <section className="grid grid-cols-2 gap-4 items-center justify-center m-11">
         <div className="flex flex-col gap-4 max-w-96">
-          <h1 className="text-5xl font-bold"><span className="text-white bg-purple-800 px-2 rounded">Share</span> the Ride, Split the <span className="text-white bg-purple-800 px-2 rounded">Cost</span></h1>
+          <h1 className="text-5xl font-bold leading-tight"><span className="text-white bg-purple-800 px-2 rounded">Share</span> the Ride, Split the <span className="text-white bg-purple-800 px-2 rounded">Cost!</span></h1>
           <Input type="text" placeholder="Enter your pickup point" />
           <Input type="text" placeholder="Enter your destination" />
           <Button className="w-1/2">Request a Ride!</Button>
@@ -26,9 +26,9 @@ const page = () => {
         </div>
         <div className="flex flex-col gap-4 max-w-96">
           {/* <h1 className="text-5xl font-bold"><span className="text-white bg-purple-800 px-2 rounded">Share</span> the Ride, Split the <span className="text-white bg-purple-800 px-2 rounded">Cost</span></h1>
-          <Input type="text" placeholder="Enter your pickup point" />
-          <Input type="text" placeholder="Enter your destination" />
-          <Button className="w-1/2">Request a Ride!</Button> */}
+            <Input type="text" placeholder="Enter your pickup point" />
+            <Input type="text" placeholder="Enter your destination" />
+            <Button className="w-1/2">Request a Ride!</Button> */}
         </div>
       </section>
 
@@ -36,9 +36,9 @@ const page = () => {
 
         <div className="flex flex-col gap-4 max-w-96">
           {/* <h1 className="text-5xl font-bold"><span className="text-white bg-purple-800 px-2 rounded">Share</span> the Ride, Split the <span className="text-white bg-purple-800 px-2 rounded">Cost</span></h1>
-          <Input type="text" placeholder="Enter your pickup point" />
-          <Input type="text" placeholder="Enter your destination" />
-          <Button className="w-1/2">Request a Ride!</Button> */}
+            <Input type="text" placeholder="Enter your pickup point" />
+            <Input type="text" placeholder="Enter your destination" />
+            <Button className="w-1/2">Request a Ride!</Button> */}
         </div>
         <div>
           <Image src="/homepage/networking2.png" alt="logo" width={500} height={500}></Image>
@@ -46,6 +46,6 @@ const page = () => {
       </section>
     </div>
   );
-};
+}
 
 export default page;
