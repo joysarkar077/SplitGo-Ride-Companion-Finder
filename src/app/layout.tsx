@@ -5,12 +5,13 @@ import AuthProvider from "./context/AuthProvider";
 import Navbar from "@/components/custionUi/Navbar";
 import 'leaflet/dist/leaflet.css';
 import { Raleway } from 'next/font/google';
+import Footer from "@/components/custionUi/Footer";
 
 const raleway = Raleway({ subsets: ["latin"] });
 
 
 export const metadata: Metadata = {
-  title: "SplitGo",
+  title: "SplitGo | Ride Companion Finder",
   description: "Split and share expenses with ease.",
 };
 
@@ -25,6 +26,7 @@ export default function RootLayout({
         <AuthProvider>
           <Navbar></Navbar>
           <div className="mt-16">{children}</div>
+          <Footer></Footer>
         </AuthProvider>
         <Toaster></Toaster>
       </body>
