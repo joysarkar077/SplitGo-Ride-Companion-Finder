@@ -8,13 +8,9 @@ import RideRequestForm from '@/components/custionUi/RideRequestForm';
 
 const Dashboard = () => {
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-      <div style={{ width: '40%' }}>
-        <RideRequestForm />
-      </div>
-      <div style={{ width: '60%' }}>
-        {/* <Map /> */}
-      </div>
+    <div className='w-full'>
+      <RideRequestForm />
+
     </div>
   );
 };
