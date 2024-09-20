@@ -9,20 +9,20 @@ const Navbar = () => {
   const { data: session } = useSession();
 
   return (
-    <nav className="p-4 md:p-6 shadow-md fixed top-0 left-0 right-0 bg-white">
+    <nav className="p-4 md:p-3 shadow-md fixed top-0 left-0 right-0 bg-white">
       <div className="container mx-auto flex flex-row justify-between items-center">
         <div className="flex flex-row items-center gap-4">
           <Link href={"/"} className="text-xl font-bold mb-4 md:mb-0">
             <Image src="/SplitGo.svg" alt="logo" width={100} height={100}></Image>
           </Link>
 
-          <Link href={"/ride"} className="text-sm font-bold mb-4 md:mb-0">
+          <Link href={"/ride"} className="text-base font-bold mb-4 md:mb-0">
             Ride
           </Link>
-          <Link href={"/about"} className="text-sm font-bold mb-4 md:mb-0">
+          <Link href={"/about"} className="text-base font-bold mb-4 md:mb-0">
             About
           </Link>
-          <Link href={"/help"} className="text-sm font-bold mb-4 md:mb-0">
+          <Link href={"/help"} className="text-base font-bold mb-4 md:mb-0">
             Help
           </Link>
         </div>
