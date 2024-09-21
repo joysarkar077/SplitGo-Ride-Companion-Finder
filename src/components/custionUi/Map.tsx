@@ -1,4 +1,3 @@
-// components/custionUi/Map.js
 'use client';
 
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';

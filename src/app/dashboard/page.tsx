@@ -1,5 +1,5 @@
-// components/custionUi/RideRequestForm.js
 'use client';
+
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import axios from 'axios';
@@ -36,7 +36,6 @@ const RideRequestForm = () => {
     const searchQuery = e.target.value;
     setOriginInput(searchQuery);
     if (searchQuery) {
-      // Check if the window is available before fetching
       if (typeof window !== 'undefined') {
         const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${searchQuery}&limit=5`);
         const data = await response.json();
@@ -316,7 +315,7 @@ const RideRequestForm = () => {
                 Posting Ride Request...
               </div>
             ) : (
-              "Post Ride Request"
+              'Post Ride Request'
             )}
           </button>
         </div>
