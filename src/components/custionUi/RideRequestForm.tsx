@@ -1,5 +1,5 @@
-// components/custionUi/RideRequestForm.js
 'use client';
+
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import axios from 'axios';
@@ -7,7 +7,7 @@ import { Loader2 } from 'lucide-react';
 import { LatLng } from 'leaflet';
 
 // Dynamically import the Map component with SSR disabled
-const Map = dynamic(() => import('./Map'), { ssr: false });
+const Map = dynamic(() => import('@/components/custionUi/Map'), { ssr: false });
 
 interface Location {
     position: LatLng;
@@ -36,9 +36,11 @@ const RideRequestForm = () => {
         const searchQuery = e.target.value;
         setOriginInput(searchQuery);
         if (searchQuery) {
-            const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${searchQuery}&limit=5`);
-            const data = await response.json();
-            setOriginSuggestions(data);
+            if (typeof window !== 'undefined') {
+                const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${searchQuery}&limit=5`);
+                const data = await response.json();
+                setOriginSuggestions(data);
+            }
         } else {
             setOriginSuggestions([]);
         }
@@ -48,9 +50,11 @@ const RideRequestForm = () => {
         const searchQuery = e.target.value;
         setDestinationInput(searchQuery);
         if (searchQuery) {
-            const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${searchQuery}&limit=5`);
-            const data = await response.json();
-            setDestinationSuggestions(data);
+            if (typeof window !== 'undefined') {
+                const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${searchQuery}&limit=5`);
+                const data = await response.json();
+                setDestinationSuggestions(data);
+            }
         } else {
             setDestinationSuggestions([]);
         }
@@ -311,7 +315,7 @@ const RideRequestForm = () => {
                                 Posting Ride Request...
                             </div>
                         ) : (
-                            "Post Ride Request"
+                            'Post Ride Request'
                         )}
                     </button>
                 </div>
