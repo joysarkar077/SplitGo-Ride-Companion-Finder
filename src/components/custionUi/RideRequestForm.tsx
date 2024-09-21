@@ -1,10 +1,11 @@
 'use client';
-
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import axios from 'axios';
 import { Loader2 } from 'lucide-react';
 import { LatLng } from 'leaflet';
-import Map from './Map';
+// import Map from './Map';
+const Map = dynamic(() => import('./Map'), { ssr: false });
 
 interface Location {
     position: LatLng;

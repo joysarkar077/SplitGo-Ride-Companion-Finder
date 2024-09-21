@@ -1,7 +1,8 @@
 'use client';
-import RideListingMap from '@/components/custionUi/RideListingMap';
+import dynamic from 'next/dynamic';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+const RideListingMap = dynamic(() => import('@/components/custionUi/RideListingMap'), { ssr: false });
 
 const Rides = () => {
     const [rides, setRides] = useState<any[]>([]);
@@ -34,18 +35,20 @@ const Rides = () => {
         };
 
         // Get the user's current location only once and then fetch rides
-        if (!userLocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    setUserLocation({
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude,
-                    });
-                },
-                (error) => {
-                    console.error('Error fetching user location:', error);
-                }
-            );
+        if (typeof window !== 'undefined') {
+            if (!userLocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        setUserLocation({
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude,
+                        });
+                    },
+                    (error) => {
+                        console.error('Error fetching user location:', error);
+                    }
+                );
+            }
         }
 
         if (userLocation) {
