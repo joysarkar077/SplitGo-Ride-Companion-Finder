@@ -36,9 +36,12 @@ const RideRequestForm = () => {
     const searchQuery = e.target.value;
     setOriginInput(searchQuery);
     if (searchQuery) {
-      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${searchQuery}&limit=5`);
-      const data = await response.json();
-      setOriginSuggestions(data);
+      // Check if the window is available before fetching
+      if (typeof window !== 'undefined') {
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${searchQuery}&limit=5`);
+        const data = await response.json();
+        setOriginSuggestions(data);
+      }
     } else {
       setOriginSuggestions([]);
     }
@@ -48,9 +51,11 @@ const RideRequestForm = () => {
     const searchQuery = e.target.value;
     setDestinationInput(searchQuery);
     if (searchQuery) {
-      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${searchQuery}&limit=5`);
-      const data = await response.json();
-      setDestinationSuggestions(data);
+      if (typeof window !== 'undefined') {
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${searchQuery}&limit=5`);
+        const data = await response.json();
+        setDestinationSuggestions(data);
+      }
     } else {
       setDestinationSuggestions([]);
     }
