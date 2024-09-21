@@ -274,13 +274,18 @@ const RideRequestForm = () => {
 
                     <label className="block text-gray-700">
                         Age Range Preference:
-                        <input
-                            type="text"
-                            placeholder="e.g., 20-30"
+                        <select
                             value={ageRange}
                             onChange={(e) => setAgeRange(e.target.value)}
                             className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                        />
+                        >
+                            <option value="">No preference</option>
+                            <option value="18-25">18-25</option>
+                            <option value="26-35">26-35</option>
+                            <option value="36-45">36-45</option>
+                            <option value="46-60">46-60</option>
+                            <option value="60+">60+</option>
+                        </select>
                     </label>
 
                     <label className="block text-gray-700">
