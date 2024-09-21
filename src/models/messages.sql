@@ -38,3 +38,5 @@ SELECT * FROM messages WHERE request_id = 12 ORDER BY sent_at;
 
 -- Select all chat groups
 SELECT * from chat_groups;
+
+SELECT * FROM ride_requests WHERE request_id = 12;

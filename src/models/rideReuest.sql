@@ -2,8 +2,32 @@
 
 USE splitGo;
 
--- Ride Requests Table
--- Ride Requests Table (Updated)
+CREATE TABLE ride_requests (
+    request_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT, -- The user who created the ride request
+    origin VARCHAR(255),
+    destination VARCHAR(255),
+    total_fare DECIMAL(10, 2),
+    vehicle_type ENUM(
+        'AutoRickshaw',
+        'CNG',
+        'Car',
+        'Hicks'
+    ),
+    total_passengers INT,
+    total_accepted INT,
+    ride_time TIMESTAMP,
+    status ENUM(
+        'pending',
+        'accepted',
+        'completed',
+        'cancelled'
+    ),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users (user_id)
+);
+
 CREATE TABLE ride_requests (
     request_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT, -- The user who created the ride request

@@ -1,4 +1,5 @@
 'use client';
+import { Loader2 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 
@@ -17,13 +18,15 @@ export default function Dashboard() {
 
   if (!isMounted) {
     // Render nothing during SSR
-    return null;
+    return (
+      <div className="flex h-screen w-screen items-center justify-center">
+        <Loader2 className="mx-auto animate-spin" />
+      </div>
+    );
   }
 
   return (
     <div>
-      <h1>Dashboard</h1>
-      {/* Render the component only on the client */}
       <RideRequestForm />
     </div>
   );

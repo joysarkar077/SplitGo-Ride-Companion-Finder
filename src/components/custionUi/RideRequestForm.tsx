@@ -1,86 +1,65 @@
 'use client';
 
-import dynamic from 'next/dynamic';
+// import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import axios from 'axios';
-import { Loader2 } from 'lucide-react';
-import { LatLng } from 'leaflet';
+// import { Loader2, Navigation } from 'lucide-react';
 import { useSession } from 'next-auth/react';
+import { Loader2 } from 'lucide-react';
+// import { LoadScript, GoogleMap, Marker } from '@react-google-maps/api';
+
+// interface Location {
+//     position: google.maps.LatLngLiteral;
+//     placeName: string;
+// }
 
 // Dynamically import the Map component with SSR disabled
-const Map = dynamic(() => import('@/components/custionUi/Map'), { ssr: false });
-
-interface Location {
-    position: LatLng;
-    placeName: string;
-}
+// const Map = dynamic(() => import('@/components/custionUi/Map'), { ssr: false });
 
 const RideRequestForm = () => {
-    const [origin, setOrigin] = useState<Location | null>(null);
-    const [destination, setDestination] = useState<Location | null>(null);
-    const [originInput, setOriginInput] = useState('');
-    const [destinationInput, setDestinationInput] = useState('');
-    const [originSuggestions, setOriginSuggestions] = useState<any[]>([]);
-    const [destinationSuggestions, setDestinationSuggestions] = useState<any[]>([]);
-    const [fare, setFare] = useState(0);
-    const [vehicleType, setVehicleType] = useState('AutoRickshaw');
-    const [totalPassengers, setTotalPassengers] = useState(1);
-    const [status, setStatus] = useState('pending');
-    const [genderPreference, setGenderPreference] = useState('');
-    const [ageRange, setAgeRange] = useState('');
-    const [institution, setInstitution] = useState('');
-    const [rideTime, setRideTime] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [droppingPinFor, setDroppingPinFor] = useState<'origin' | 'destination' | null>(null);
-    const { data: session } = useSession();
+    const [origin, setOrigin] = useState<string>('');
+    const [destination, setDestination] = useState<string>('');
+    // const [originInput, setOriginInput] = useState('');
+    // const [destinationInput, setDestinationInput] = useState('');
+    // const [originSuggestions, setOriginSuggestions] = useState<any[]>([]);
+    // const [destinationSuggestions, setDestinationSuggestions] = useState<any[]>([]);
+    const [fare, setFare] = useState(0);  // Fare input state
+    const [vehicleType, setVehicleType] = useState('AutoRickshaw');  // Vehicle type state
+    const [totalPassengers, setTotalPassengers] = useState(1);  // Total passengers state
+    const [genderPreference, setGenderPreference] = useState('');  // Gender preference state
+    const [ageRange, setAgeRange] = useState('');  // Age range preference state
+    const [institution, setInstitution] = useState('');  // Institution preference state
+    const [rideTime, setRideTime] = useState('');  // Ride time input state
+    const [loading, setLoading] = useState(false);  // Loading state
+    // const [droppingPinFor, setDroppingPinFor] = useState<'origin' | 'destination' | null>(null);  // Dropping pin state
+    const { data: session } = useSession();  // Getting session data
 
-    const handleOriginChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const searchQuery = e.target.value;
-        setOriginInput(searchQuery);
-        if (searchQuery) {
-            if (typeof window !== 'undefined') {
-                const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${searchQuery}&limit=5`);
-                const data = await response.json();
-                setOriginSuggestions(data);
-            }
-        } else {
-            setOriginSuggestions([]);
-        }
-    };
+    // Function to handle location search using Google Maps Geocoding API
+    // const handleLocationChange = async (e: React.ChangeEvent<HTMLInputElement>, setInput: Function, setSuggestions: Function) => {
+    //     const searchQuery = e.target.value;
+    //     setInput(searchQuery);
 
-    const handleDestinationChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const searchQuery = e.target.value;
-        setDestinationInput(searchQuery);
-        if (searchQuery) {
-            if (typeof window !== 'undefined') {
-                const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${searchQuery}&limit=5`);
-                const data = await response.json();
-                setDestinationSuggestions(data);
-            }
-        } else {
-            setDestinationSuggestions([]);
-        }
-    };
+    //     if (searchQuery) {
+    //         const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${searchQuery}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`);
+    //         const data = await response.json();
+    //         setSuggestions(data.results);
+    //     } else {
+    //         setSuggestions([]);
+    //     }
+    // };
 
-    const handleSelectOrigin = (place: any) => {
-        const position = new LatLng(parseFloat(place.lat), parseFloat(place.lon));
-        setOriginInput(place.display_name);
-        setOrigin({
-            placeName: place.display_name,
-            position,
-        });
-        setOriginSuggestions([]);
-    };
-
-    const handleSelectDestination = (place: any) => {
-        const position = new LatLng(parseFloat(place.lat), parseFloat(place.lon));
-        setDestinationInput(place.display_name);
-        setDestination({
-            placeName: place.display_name,
-            position,
-        });
-        setDestinationSuggestions([]);
-    };
+    // const handleSelectLocation = (place: any, setLocation: Function, setInput: Function, setSuggestions: Function) => {
+    //     const position = {
+    //         lat: place.geometry.location.lat,
+    //         lng: place.geometry.location.lng,
+    //     };
+    //     setInput(place.formatted_address);
+    //     setLocation({
+    //         placeName: place.formatted_address,
+    //         position,
+    //     });
+    //     setSuggestions([]);
+    // };
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -94,21 +73,21 @@ const RideRequestForm = () => {
         try {
             const response = await axios.post('/api/ride-requests', {
                 userId: session?.user.id,
-                origin: origin.placeName,
-                originLat: origin.position.lat,
-                originLng: origin.position.lng,
-                destination: destination.placeName,
-                destinationLat: destination.position.lat,
-                destinationLng: destination.position.lng,
-                totalFare: fare,
-                vehicleType,
-                rideTime,
-                totalPassengers,
-                status,
+                origin: origin,
+                // originLat: origin.position.lat,
+                // originLng: origin.position.lng,
+                destination: destination,
+                // destinationLat: destination.position.lat,
+                // destinationLng: destination.position.lng,
+                totalFare: fare,  // Sending fare to backend
+                vehicleType,  // Sending vehicle type to backend
+                rideTime,  // Sending ride time to backend
+                totalPassengers,  // Sending total passengers to backend
+                status: 'pending',
                 preferences: {
-                    gender: genderPreference,
-                    ageRange,
-                    institution,
+                    gender: genderPreference,  // Sending gender preference to backend
+                    ageRange,  // Sending age range to backend
+                    institution,  // Sending institution preference to backend
                 },
             });
 
@@ -125,90 +104,73 @@ const RideRequestForm = () => {
         setLoading(false);
     };
 
-    const handleMapClick = (latlng: LatLng, placeName: string) => {
-        if (droppingPinFor === 'origin') {
-            setOrigin({
-                position: latlng,
-                placeName,
-            });
-            setOriginInput(placeName);
-        } else if (droppingPinFor === 'destination') {
-            setDestination({
-                position: latlng,
-                placeName,
-            });
-            setDestinationInput(placeName);
-        }
-    };
+    // const handleMapClick = (latlng: google.maps.LatLngLiteral, placeName: string) => {
+    //     if (droppingPinFor === 'origin') {
+    //         setOrigin({ position: latlng, placeName });
+    //         setOriginInput(placeName);
+    //     } else if (droppingPinFor === 'destination') {
+    //         setDestination({ position: latlng, placeName });
+    //         setDestinationInput(placeName);
+    //     }
+    // };
 
     return (
         <div className="mt-10 p-6 bg-white shadow-md rounded-lg">
             <form onSubmit={handleSubmit} className="space-y-4 flex gap-10 w-full justify-stretch">
                 <div>
-                    <label className="block text-gray-700">
-                        Origin:
+                    <div className="relative flex justify-center items-center gap-2">
                         <input
                             type="text"
-                            value={originInput}
-                            onChange={handleOriginChange}
-                            placeholder="Enter origin"
-                            className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                            value={origin}
+                            // onChange={(e) => handleLocationChange(e, setOriginInput, setOriginSuggestions)}
+                            onChange={(e) => setOrigin(e.target.value)}
+                            placeholder="Pick up location"
+                            className="mt-1 p-2 block w-full border border-gray-300 rounded-md pr-10"
                         />
-                        {originSuggestions.length > 0 && (
-                            <ul className="bg-white shadow-lg border border-gray-300 mt-2 rounded-md max-h-40 overflow-y-auto">
+                        {/* {originSuggestions.length > 0 && (
+                            <ul className="absolute left-0 right-0 bg-white shadow-lg border border-gray-300 mt-2 rounded-md max-h-40 overflow-y-auto z-10">
                                 {originSuggestions.map((place) => (
                                     <li
                                         key={place.place_id}
-                                        onClick={() => handleSelectOrigin(place)}
+                                        onClick={() => handleSelectLocation(place, setOrigin, setOriginInput, setOriginSuggestions)}
                                         className="p-2 hover:bg-gray-100 cursor-pointer"
                                     >
-                                        {place.display_name}
+                                        {place.formatted_address}
                                     </li>
                                 ))}
                             </ul>
-                        )}
-                    </label>
-                    <button
-                        type="button"
-                        onClick={() => setDroppingPinFor('origin')}
-                        className={`p-2 mt-2 w-full text-white ${droppingPinFor === 'origin' ? 'bg-blue-600' : 'bg-blue-500'} rounded-md`}
-                    >
-                        Drop a Pin for Origin
-                    </button>
+                        )} */}
+                    </div>
 
-                    <label className="block text-gray-700">
-                        Destination:
+                    <div className="relative flex justify-center items-center gap-2">
                         <input
                             type="text"
-                            value={destinationInput}
-                            onChange={handleDestinationChange}
+                            value={destination}
+                            // onChange={(e) => handleLocationChange(e, setDestinationInput, setDestinationSuggestions)}
+                            onChange={(e) => setDestination(e.target.value)}
                             placeholder="Enter destination"
-                            className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                            className="mt-1 p-2 block w-full border border-gray-300 rounded-md pr-10"
                         />
-                        {destinationSuggestions.length > 0 && (
-                            <ul className="bg-white shadow-lg border border-gray-300 mt-2 rounded-md max-h-40 overflow-y-auto">
+                        {/* {destinationSuggestions.length > 0 && (
+                            <ul className="absolute left-0 right-0 bg-white shadow-lg border border-gray-300 mt-2 rounded-md max-h-40 overflow-y-auto z-10">
                                 {destinationSuggestions.map((place) => (
                                     <li
                                         key={place.place_id}
-                                        onClick={() => handleSelectDestination(place)}
+                                        onClick={() => handleSelectLocation(place, setDestination, setDestinationInput, setDestinationSuggestions)}
                                         className="p-2 hover:bg-gray-100 cursor-pointer"
                                     >
-                                        {place.display_name}
+                                        {place.formatted_address}
                                     </li>
                                 ))}
                             </ul>
-                        )}
-                    </label>
-                    <button
-                        type="button"
-                        onClick={() => setDroppingPinFor('destination')}
-                        className={`p-2 mt-2 w-full text-white ${droppingPinFor === 'destination' ? 'bg-blue-600' : 'bg-blue-500'} rounded-md`}
-                    >
-                        Drop a Pin for Destination
-                    </button>
+                        )} */}
+                    </div>
 
-                    <label className="block text-gray-700">
-                        Fare:
+                    {/* Fare Input */}
+                    <div className="relative my-4">
+                        <label className="absolute top-0 left-1 -translate-y-1/2 text-xs text-gray-700 bg-white px-1">
+                            Fare:
+                        </label>
                         <input
                             type="number"
                             value={fare}
@@ -216,10 +178,10 @@ const RideRequestForm = () => {
                             required
                             className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
                         />
-                    </label>
+                    </div>
 
-                    <label className="block text-gray-700">
-                        Vehicle Type:
+                    {/* Vehicle Type Selection */}
+                    <div className="relative my-4">
                         <select
                             value={vehicleType}
                             onChange={(e) => setVehicleType(e.target.value)}
@@ -229,10 +191,13 @@ const RideRequestForm = () => {
                             <option value="Premier">Premier</option>
                             <option value="SplitGOXL">SplitGOXL</option>
                         </select>
-                    </label>
+                    </div>
 
-                    <label className="block text-gray-700">
-                        Total Passengers:
+                    {/* Total Passengers Input */}
+                    <div className="relative my-4">
+                        <label className="absolute top-0 left-1 -translate-y-1/2 text-xs text-gray-700 bg-white px-1">
+                            Total Passengers:
+                        </label>
                         <input
                             type="number"
                             value={totalPassengers}
@@ -240,71 +205,60 @@ const RideRequestForm = () => {
                             required
                             className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
                         />
-                    </label>
+                    </div>
 
-                    <label className="block text-gray-700">
-                        Status:
-                        <select
-                            value={status}
-                            onChange={(e) => setStatus(e.target.value)}
-                            className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                        >
-                            <option value="pending">Pending</option>
-                            <option value="accepted">Accepted</option>
-                            <option value="completed">Completed</option>
-                            <option value="cancelled">Cancelled</option>
-                        </select>
-                    </label>
-
-                    <label className="block text-gray-700">
-                        Gender Preference:
+                    {/* Gender Preference Selection */}
+                    <div className="relative my-4">
                         <select
                             value={genderPreference}
                             onChange={(e) => setGenderPreference(e.target.value)}
-                            className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                            className="mt-1 p-2 block w-full border border-gray-300 rounded-md text-sm"
                         >
-                            <option value="">No preference</option>
+                            <option value="">Gender Preference</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
                             <option value="Other">Other</option>
                         </select>
-                    </label>
+                    </div>
 
-                    <label className="block text-gray-700">
-                        Age Range Preference:
+                    {/* Age Range Selection */}
+                    <div className="relative my-4  text-sm">
                         <select
                             value={ageRange}
                             onChange={(e) => setAgeRange(e.target.value)}
                             className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
                         >
-                            <option value="">No preference</option>
+                            <option value="">Age Preference:</option>
                             <option value="18-25">18-25</option>
                             <option value="26-35">26-35</option>
                             <option value="36-45">36-45</option>
                             <option value="46-60">46-60</option>
                             <option value="60+">60+</option>
                         </select>
-                    </label>
+                    </div>
 
-                    <label className="block text-gray-700">
-                        Institution Preference (Optional):
+                    {/* Institution Preference Input */}
+                    <div className="relative my-4">
+                        <label className="absolute top-0 left-1 -translate-y-1/2 text-xs text-gray-700 bg-white px-1">
+                            Institution Preference (Optional):
+                        </label>
                         <input
                             type="text"
                             value={institution}
                             onChange={(e) => setInstitution(e.target.value)}
                             className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
                         />
-                    </label>
+                    </div>
 
-                    <label className="block text-gray-700">
-                        Ride Time:
+                    {/* Ride Time Input */}
+                    <div className="relative my-4">
                         <input
                             type="datetime-local"
                             value={rideTime}
                             onChange={(e) => setRideTime(e.target.value)}
-                            className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                            className="mt-1 p-2 block w-full border border-gray-300 rounded-md text-sm"
                         />
-                    </label>
+                    </div>
 
                     <button
                         type="submit"
@@ -322,12 +276,12 @@ const RideRequestForm = () => {
                     </button>
                 </div>
 
-                <Map
+                {/* <Map
                     origin={origin}
                     destination={destination}
                     setOrigin={(location: Location) => handleMapClick(location.position, location.placeName)}
                     setDestination={(location: Location) => handleMapClick(location.position, location.placeName)}
-                />
+                /> */}
             </form>
         </div>
     );

@@ -34,7 +34,7 @@ const Navbar = () => {
               Trip
             </Link>
 
-            <Link href={"/chat-group"} className="text-base font-bold mb-4 md:mb-0">
+            <Link href={"/chat-group-list"} className="text-base font-bold mb-4 md:mb-0">
               <MessageCircle></MessageCircle> </Link>
             <Link href={"/profile"} className="text-base font-bold mb-4 md:mb-0">
               <User2></User2> </Link>

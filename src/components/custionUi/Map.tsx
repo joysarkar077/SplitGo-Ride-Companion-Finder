@@ -1,18 +1,9 @@
 'use client';
 
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
-import { LatLng } from 'leaflet';
-import L from 'leaflet';
-
-const markerIcon = new L.Icon({
-    iconUrl: '/map-pin.svg',
-    iconSize: [38, 50],
-    iconAnchor: [22, 51],
-    popupAnchor: [-3, -76],
-});
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 
 interface Location {
-    position: LatLng;
+    position: google.maps.LatLngLiteral;
     placeName: string;
 }
 
@@ -23,47 +14,39 @@ interface MapProps {
     setDestination: (location: Location) => void;
 }
 
-const ClickHandler: React.FC<{ setOrigin: any; setDestination: any; origin: Location | null; destination: Location | null }> = ({ setOrigin, setDestination, origin, destination }) => {
-    useMapEvents({
-        click(e) {
-            const latlng = new LatLng(e.latlng.lat, e.latlng.lng);
-            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${e.latlng.lat}&lon=${e.latlng.lng}&accept-language=en`)
+const Map: React.FC<MapProps> = ({ origin, destination, setOrigin, setDestination }) => {
+    const handleMapClick = (e: google.maps.MapMouseEvent) => {
+        if (e.latLng) {
+            const latlng = {
+                lat: e.latLng.lat(),
+                lng: e.latLng.lng(),
+            };
+
+            // Reverse Geocoding to get place name
+            fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latlng.lat},${latlng.lng}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`)
                 .then((response) => response.json())
                 .then((data) => {
-                    const placeName = data.display_name || 'Unknown Place';
+                    const placeName = data.results[0]?.formatted_address || 'Unknown Place';
                     const location = { position: latlng, placeName };
 
-                    if (!origin) {
-                        setOrigin(location);
-                    } else if (!destination) {
-                        setDestination(location);
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error fetching place name:', error);
+                    // Set origin or destination based on user's current action
+                    setOrigin ? setOrigin(location) : setDestination(location);
                 });
-        },
-    });
+        }
+    };
 
-    return null;
-};
-
-const Map: React.FC<MapProps> = ({ origin, destination, setOrigin, setDestination }) => {
     return (
-        <MapContainer center={[23.8103, 90.4125]} zoom={13} style={{ height: '800px', width: '100%' }}>
-            <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            />
-            <ClickHandler
-                setOrigin={setOrigin}
-                setDestination={setDestination}
-                origin={origin}
-                destination={destination}
-            />
-            {origin && <Marker position={origin.position} icon={markerIcon}></Marker>}
-            {destination && <Marker position={destination.position} icon={markerIcon}></Marker>}
-        </MapContainer>
+        <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}>
+            <GoogleMap
+                center={origin?.position || { lat: 23.8103, lng: 90.4125 }}
+                zoom={13}
+                mapContainerStyle={{ height: '400px', width: '100%' }}
+                onClick={handleMapClick}
+            >
+                {origin && <Marker position={origin.position} />}
+                {destination && <Marker position={destination.position} />}
+            </GoogleMap>
+        </LoadScript>
     );
 };
 
