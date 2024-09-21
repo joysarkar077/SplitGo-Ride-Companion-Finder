@@ -19,7 +19,7 @@ const Navbar = () => {
           <Link href={"/ride"} className="text-base font-bold mb-4 md:mb-0">
             Ride
           </Link>
-          <Link href={"/about"} className="text-base font-bold mb-4 md:mb-0">
+          <Link href={"/about-us"} className="text-base font-bold mb-4 md:mb-0">
             About
           </Link>
           <Link href={"/help"} className="text-base font-bold mb-4 md:mb-0">
