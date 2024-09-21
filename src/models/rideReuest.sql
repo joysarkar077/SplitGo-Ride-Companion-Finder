@@ -62,3 +62,5 @@ WHERE
 UPDATE ride_requests SET status = 'accepted' WHERE request_id = 11;
 
 SELECT * FROM ride_requests
+
+DELETE FROM ride_requests;

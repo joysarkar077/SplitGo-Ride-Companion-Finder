@@ -5,6 +5,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { Loader2 } from 'lucide-react';
 import { LatLng } from 'leaflet';
+import { useSession } from 'next-auth/react';
 
 // Dynamically import the Map component with SSR disabled
 const Map = dynamic(() => import('@/components/custionUi/Map'), { ssr: false });
@@ -31,6 +32,7 @@ const RideRequestForm = () => {
     const [rideTime, setRideTime] = useState('');
     const [loading, setLoading] = useState(false);
     const [droppingPinFor, setDroppingPinFor] = useState<'origin' | 'destination' | null>(null);
+    const { data: session } = useSession();
 
     const handleOriginChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const searchQuery = e.target.value;
@@ -91,7 +93,7 @@ const RideRequestForm = () => {
 
         try {
             const response = await axios.post('/api/ride-requests', {
-                userId: 1,
+                userId: session?.user.id,
                 origin: origin.placeName,
                 originLat: origin.position.lat,
                 originLng: origin.position.lng,

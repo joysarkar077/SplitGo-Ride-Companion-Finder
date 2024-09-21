@@ -25,21 +25,11 @@ export const POST = async (request: Request) => {
     const connection = await dbConnection();
     const data = await request.json() as RideRequestData;
     const {
-        userId,
-        origin,
-        originLat,
-        originLng,
-        destination,
-        destinationLat,
-        destinationLng,
-        totalFare,
-        vehicleType,
-        rideTime,
-        totalPassengers,
-        status,
-        preferences
+        userId, origin, originLat, originLng, destination, destinationLat, destinationLng,
+        totalFare, vehicleType, rideTime, totalPassengers, status, preferences
     } = data;
 
+    console.log(userId);
     try {
         // Start transaction
         await connection.beginTransaction();
@@ -48,38 +38,36 @@ export const POST = async (request: Request) => {
         const formattedRideTime = new Date(rideTime).toISOString().slice(0, 19).replace('T', ' ');
         const [rideRequestResult] = await connection.execute<ResultSetHeader>(`
             INSERT INTO ride_requests (
-                user_id, origin, origin_lat, origin_lng, destination, destination_lat, destination_lng, total_fare, vehicle_type, ride_time, total_passengers, status
+                user_id, origin, origin_lat, origin_lng, destination, destination_lat, destination_lng, total_fare,
+                vehicle_type, ride_time, total_passengers, status
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [
-            userId,
-            origin,
-            originLat,
-            originLng,
-            destination,
-            destinationLat,
-            destinationLng,
-            totalFare,
-            vehicleType,
-            formattedRideTime,
-            totalPassengers,
-            status
+            userId, origin, originLat, originLng, destination, destinationLat, destinationLng, totalFare,
+            vehicleType, formattedRideTime, totalPassengers, status
         ]);
 
-        const requestId = rideRequestResult.insertId; // This will work now
+        const requestId = rideRequestResult.insertId;
 
-        // Insert into ride_preferences table
+        // Create a chat group for the ride request
+        const groupName = `Ride-${requestId}-Chat`;
+        await connection.execute(`
+            INSERT INTO chat_groups (group_name, request_id, created_at, expiry_time)
+            VALUES (?, ?, NOW(), DATE_ADD(NOW(), INTERVAL 1 DAY))
+        `, [groupName, requestId]);
+
+        // Add the creator of the ride (userId) to the chat group
+        await connection.execute(
+            'INSERT INTO chat_group_participants (group_name, user_id) VALUES (?, ?)',
+            [groupName, userId]
+        );
+
+        // Insert preferences (if any)
         if (preferences) {
             const { gender, ageRange, institution } = preferences;
             await connection.execute(`
-                INSERT INTO ride_preferences (
-                    request_id, gender, age_range, institution
-                ) VALUES (?, ?, ?, ?)
-            `, [
-                requestId,
-                gender || null,
-                ageRange || null,
-                institution || null
-            ]);
+                INSERT INTO ride_preferences (request_id, gender, age_range, institution)
+                VALUES (?, ?, ?, ?)
+            `, [requestId, gender || null, ageRange || null, institution || null]);
         }
 
         // Commit transaction
@@ -91,7 +79,8 @@ export const POST = async (request: Request) => {
         await connection.rollback(); // Rollback transaction in case of error
         return new Response(JSON.stringify({ success: false, error }), { status: 500 });
     }
-}
+};
+
 
 
 export const GET = async (request: Request) => {

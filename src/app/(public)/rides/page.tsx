@@ -2,6 +2,7 @@
 import dynamic from 'next/dynamic';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 const RideListingMap = dynamic(() => import('@/components/custionUi/RideListingMap'), { ssr: false });
 
 const Rides = () => {
@@ -21,6 +22,7 @@ const Rides = () => {
     const [institution, setInstitution] = useState<string>(''); // Institution preference
     const [rideTimeFrom, setRideTimeFrom] = useState<string>(''); // Ride time "from"
     const [rideTimeTo, setRideTimeTo] = useState<string>(''); // Ride time "to"
+    const { data: session } = useSession(); // Getting session data (which contains the user)
 
     useEffect(() => {
         const fetchRides = async () => {
@@ -75,8 +77,9 @@ const Rides = () => {
     };
 
     const handleAcceptRide = async (requestId: number) => {
-        const response = await axios.post('/api/ride-requests', {
+        const response = await axios.post('/api/accept-ride-requests', {
             requestId,
+            userId: session?.user?.id,
             action: 'accept',
         });
         if (response.data.success) {
@@ -84,6 +87,12 @@ const Rides = () => {
             if (userLocation) {
                 const updatedRides = await axios.get(`/api/ride-requests?userLat=${userLocation.lat}&userLng=${userLocation.lng}&maxDistance=${rangeValue}&sortBy=${sortBy.join(',')}`);
                 setRides(updatedRides.data);
+            }
+            if (response.data.success) {
+                alert('Ride accepted and chat group created');
+                // Refresh the ride list or navigate to the chat page
+            } else {
+                alert('Error accepting ride: ' + response.data.message);
             }
         }
     };
