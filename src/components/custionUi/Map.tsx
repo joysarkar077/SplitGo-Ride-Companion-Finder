@@ -50,7 +50,7 @@ const ClickHandler: React.FC<{ setOrigin: any; setDestination: any; origin: Loca
 
 const Map: React.FC<MapProps> = ({ origin, destination, setOrigin, setDestination }) => {
     return (
-        <MapContainer center={[23.8103, 90.4125]} zoom={13} style={{ height: '400px', width: '100%' }}>
+        <MapContainer center={[23.8103, 90.4125]} zoom={13} style={{ height: '800px', width: '100%' }}>
             <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
