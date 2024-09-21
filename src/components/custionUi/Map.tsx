@@ -1,3 +1,4 @@
+// components/custionUi/Map.js
 'use client';
 
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
@@ -55,7 +56,6 @@ const Map: React.FC<MapProps> = ({ origin, destination, setOrigin, setDestinatio
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
-            {/* ClickHandler component to handle clicks on the map */}
             <ClickHandler
                 setOrigin={setOrigin}
                 setDestination={setDestination}

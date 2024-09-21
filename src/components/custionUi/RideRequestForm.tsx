@@ -1,10 +1,12 @@
+// components/custionUi/RideRequestForm.js
 'use client';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import axios from 'axios';
 import { Loader2 } from 'lucide-react';
 import { LatLng } from 'leaflet';
-// import Map from './Map';
+
+// Dynamically import the Map component with SSR disabled
 const Map = dynamic(() => import('./Map'), { ssr: false });
 
 interface Location {
@@ -15,8 +17,8 @@ interface Location {
 const RideRequestForm = () => {
     const [origin, setOrigin] = useState<Location | null>(null);
     const [destination, setDestination] = useState<Location | null>(null);
-    const [originInput, setOriginInput] = useState('');  // Origin input value
-    const [destinationInput, setDestinationInput] = useState('');  // Destination input value
+    const [originInput, setOriginInput] = useState('');
+    const [destinationInput, setDestinationInput] = useState('');
     const [originSuggestions, setOriginSuggestions] = useState<any[]>([]);
     const [destinationSuggestions, setDestinationSuggestions] = useState<any[]>([]);
     const [fare, setFare] = useState(0);
@@ -28,13 +30,11 @@ const RideRequestForm = () => {
     const [institution, setInstitution] = useState('');
     const [rideTime, setRideTime] = useState('');
     const [loading, setLoading] = useState(false);
-
-    // State to track which pin the user is dropping
     const [droppingPinFor, setDroppingPinFor] = useState<'origin' | 'destination' | null>(null);
 
     const handleOriginChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const searchQuery = e.target.value;
-        setOriginInput(searchQuery);  // Update input value
+        setOriginInput(searchQuery);
         if (searchQuery) {
             const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${searchQuery}&limit=5`);
             const data = await response.json();
@@ -46,7 +46,7 @@ const RideRequestForm = () => {
 
     const handleDestinationChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const searchQuery = e.target.value;
-        setDestinationInput(searchQuery);  // Update input value
+        setDestinationInput(searchQuery);
         if (searchQuery) {
             const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${searchQuery}&limit=5`);
             const data = await response.json();
@@ -58,7 +58,7 @@ const RideRequestForm = () => {
 
     const handleSelectOrigin = (place: any) => {
         const position = new LatLng(parseFloat(place.lat), parseFloat(place.lon));
-        setOriginInput(place.display_name);  // Update input field with selected place name
+        setOriginInput(place.display_name);
         setOrigin({
             placeName: place.display_name,
             position,
@@ -68,7 +68,7 @@ const RideRequestForm = () => {
 
     const handleSelectDestination = (place: any) => {
         const position = new LatLng(parseFloat(place.lat), parseFloat(place.lon));
-        setDestinationInput(place.display_name);  // Update input field with selected place name
+        setDestinationInput(place.display_name);
         setDestination({
             placeName: place.display_name,
             position,
@@ -87,7 +87,7 @@ const RideRequestForm = () => {
 
         try {
             const response = await axios.post('/api/ride-requests', {
-                userId: 1,  // Set your actual user ID here
+                userId: 1,
                 origin: origin.placeName,
                 originLat: origin.position.lat,
                 originLng: origin.position.lng,
@@ -119,35 +119,31 @@ const RideRequestForm = () => {
         setLoading(false);
     };
 
-    // Handle Map Pin Drop
     const handleMapClick = (latlng: LatLng, placeName: string) => {
         if (droppingPinFor === 'origin') {
             setOrigin({
                 position: latlng,
                 placeName,
             });
-            setOriginInput(placeName);  // Update origin input with the place name
+            setOriginInput(placeName);
         } else if (droppingPinFor === 'destination') {
             setDestination({
                 position: latlng,
                 placeName,
             });
-            setDestinationInput(placeName);  // Update destination input with the place name
+            setDestinationInput(placeName);
         }
-        // Keep the pin drop mode active for multiple pin drops
-        // You can keep dropping pins as many times as needed
     };
 
     return (
         <div className="mt-10 p-6 bg-white shadow-md rounded-lg">
             <form onSubmit={handleSubmit} className="space-y-4 flex gap-10 w-full justify-stretch">
                 <div>
-                    {/* Origin Input */}
                     <label className="block text-gray-700">
                         Origin:
                         <input
                             type="text"
-                            value={originInput}  // Bind origin input value
+                            value={originInput}
                             onChange={handleOriginChange}
                             placeholder="Enter origin"
                             className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
@@ -166,21 +162,19 @@ const RideRequestForm = () => {
                             </ul>
                         )}
                     </label>
-                    {/* Drop a Pin Button for Origin */}
                     <button
                         type="button"
-                        onClick={() => setDroppingPinFor('origin')}  // Set mode to drop pin for origin
+                        onClick={() => setDroppingPinFor('origin')}
                         className={`p-2 mt-2 w-full text-white ${droppingPinFor === 'origin' ? 'bg-blue-600' : 'bg-blue-500'} rounded-md`}
                     >
                         Drop a Pin for Origin
                     </button>
 
-                    {/* Destination Input */}
                     <label className="block text-gray-700">
                         Destination:
                         <input
                             type="text"
-                            value={destinationInput}  // Bind destination input value
+                            value={destinationInput}
                             onChange={handleDestinationChange}
                             placeholder="Enter destination"
                             className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
@@ -199,17 +193,14 @@ const RideRequestForm = () => {
                             </ul>
                         )}
                     </label>
-                    {/* Drop a Pin Button for Destination */}
                     <button
                         type="button"
-                        onClick={() => setDroppingPinFor('destination')}  // Set mode to drop pin for destination
+                        onClick={() => setDroppingPinFor('destination')}
                         className={`p-2 mt-2 w-full text-white ${droppingPinFor === 'destination' ? 'bg-blue-600' : 'bg-blue-500'} rounded-md`}
                     >
                         Drop a Pin for Destination
                     </button>
 
-                    {/* Fare, Vehicle type, other fields... */}
-                    {/* Fare Input */}
                     <label className="block text-gray-700">
                         Fare:
                         <input
@@ -299,7 +290,6 @@ const RideRequestForm = () => {
                         />
                     </label>
 
-                    {/* Ride Time Input */}
                     <label className="block text-gray-700">
                         Ride Time:
                         <input
@@ -309,7 +299,6 @@ const RideRequestForm = () => {
                             className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
                         />
                     </label>
-
 
                     <button
                         type="submit"
@@ -327,7 +316,6 @@ const RideRequestForm = () => {
                     </button>
                 </div>
 
-                {/* Map Component */}
                 <Map
                     origin={origin}
                     destination={destination}
