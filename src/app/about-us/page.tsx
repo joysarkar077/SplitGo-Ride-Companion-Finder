@@ -41,15 +41,27 @@ const AboutUs = () => {
       <section className="max-w-4xl mx-auto text-center mb-12">
         <h1 className="text-4xl font-bold mb-6">About Us</h1>
         <p className="text-lg text-gray-700 mb-6">
-          Welcome to our company! We are a team dedicated to providing top-notch
-          services and solutions. Our mission is to innovate and bring the best
-          products to our customers. We believe in teamwork, transparency, and
-          creativity.
+        At SplitGo, we believe in making travel more affordable, convenient, 
+        and environmentally friendly. Our platform connects people who are 
+        headed in the same direction, allowing them to share rides and split 
+        the costs. Founded as a project for BRAC University’s CSE370 course, 
+        SplitGo is designed to meet the needs of students, commuters, and 
+        anyone looking for an efficient, cost-saving way to travel.
+
+        By matching riders with others who share similar routes, SplitGo 
+        helps reduce the number of vehicles on the road, cutting down on 
+        traffic congestion and carbon emissions while also making transportation 
+        more accessible. Our user-friendly platform provides a seamless experience, 
+        enabling users to find and connect with ride companions in just a few clicks.
         </p>
         <h2 className="text-3xl font-bold mb-4">Our Vision</h2>
         <p className="text-lg text-gray-700">
-          To lead the industry by continuously innovating and delivering
-          exceptional products that enhance the quality of life.
+        Our vision is to revolutionize the way people travel by fostering a culture 
+        of shared transportation. We aim to make ride-sharing the go-to option for people 
+        looking to save money, reduce their environmental impact, and make commuting 
+        more social and enjoyable. We envision a future where SplitGo becomes a trusted, 
+        everyday tool for travelers, promoting sustainable mobility and transforming the 
+        way we think about transportation—one ride at a time.
         </p>
       </section>
 
