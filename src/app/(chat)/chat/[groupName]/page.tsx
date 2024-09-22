@@ -1,19 +1,20 @@
 'use client';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams, useSearchParams } from 'next/navigation'; // Use Next.js 13's params and search params
+import { useParams, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
 const GroupChat = () => {
     const [messages, setMessages] = useState<any[]>([]);
     const [newMessage, setNewMessage] = useState<string>('');
-    const params = useParams();  // Extract groupName from the URL params
-    const searchParams = useSearchParams();  // Extract requestId from query params
+    const params = useParams();
+    const searchParams = useSearchParams();
     const { groupName } = params;
-    const requestId = searchParams.get('requestId');  // Extract requestId from the query parameters
-    const { data: session } = useSession(); // Get the current user session
+    const requestId = searchParams.get('requestId');
+    const { data: session } = useSession();  // Get current user session
+    const currentUserId = session?.user?.id;
 
-    // Fetch messages whenever the groupName changes
+    // Fetch messages initially and set up polling for real-time updates
     useEffect(() => {
         const fetchMessages = async () => {
             if (groupName) {
@@ -27,21 +28,26 @@ const GroupChat = () => {
         };
 
         fetchMessages();
+
+        // Poll for new messages every 3 seconds
+        const interval = setInterval(fetchMessages, 3000);
+
+        return () => clearInterval(interval); // Cleanup interval on unmount
     }, [groupName]);
 
     // Handle sending a new message
     const handleSendMessage = async () => {
-        if (newMessage.trim() === '' || !requestId) return;
+        if (newMessage.trim() === '' || !requestId || !currentUserId) return;
 
         try {
             await axios.post(`/api/chat-groups/${groupName}`, {
                 message_text: newMessage,
-                sender_id: session?.user?.id,  // Include the sender's user ID
-                request_id: requestId,  // Use the dynamic request_id from the URL
+                sender_id: currentUserId, // Use the current user’s ID from the session
+                request_id: requestId,
             });
 
             setNewMessage('');
-            // Refresh the messages list after sending a message
+            // Refresh messages after sending a new one
             const response = await axios.get(`/api/chat-groups/${groupName}`);
             setMessages(response.data);
         } catch (error) {
@@ -50,27 +56,42 @@ const GroupChat = () => {
     };
 
     return (
-        <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">Chat Group: {groupName}</h1>
-            <div className="bg-white p-4 mb-4 rounded-lg shadow-lg max-h-96 overflow-y-scroll">
+        <div className="p-6 max-w-4xl mx-auto bg-gray-50 h-screen flex flex-col">
+            <h1 className="text-3xl font-bold text-purple-700 mb-4">Chat Group: {groupName}</h1>
+
+            <div className="flex-grow overflow-y-auto bg-white p-4 rounded-lg shadow-lg max-h-96 mb-4">
                 {messages.map((message) => (
-                    <div key={message.message_id} className="mb-2">
-                        <p><strong>{message.sender_id}</strong>: {message.message_text}</p>
-                        <p className="text-xs text-gray-500">{new Date(message.sent_at).toLocaleString()}</p>
+                    <div
+                        key={message.message_id}
+                        className={`flex ${message.sender_id == currentUserId ? 'justify-end' : 'justify-start'} mb-4`}
+                    >
+                        <div
+                            className={`${message.sender_id == currentUserId ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-800'
+                                } p-3 rounded-lg max-w-xs shadow`}
+                        >
+                            <p className="font-semibold mb-1">
+                                {message.sender_name || 'Anonymous'} {/* Display sender's name */}
+                            </p>
+                            <p>{message.message_text}</p>
+                            <p className="text-xs text-gray-500 mt-1">
+                                {new Date(message.sent_at).toLocaleTimeString()}
+                            </p>
+                        </div>
                     </div>
                 ))}
             </div>
-            <div className="flex items-center">
+
+            <div className="flex items-center mt-4">
                 <input
                     type="text"
                     placeholder="Type your message..."
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
-                    className="flex-grow p-2 border rounded-l-md"
+                    className="flex-grow p-3 border rounded-l-md focus:outline-none focus:ring-2 focus:ring-purple-600"
                 />
                 <button
                     onClick={handleSendMessage}
-                    className="p-2 bg-blue-500 text-white rounded-r-md"
+                    className="p-3 bg-purple-600 text-white rounded-r-md shadow-md hover:bg-purple-700 transition"
                 >
                     Send
                 </button>

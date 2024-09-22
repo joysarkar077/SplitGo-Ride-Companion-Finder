@@ -1,30 +1,26 @@
 'use client';
-// import dynamic from 'next/dynamic';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 
-// Dynamically import RideListingMap component with SSR disabled
-// const RideListingMap = dynamic(() => import('@/components/custionUi/RideListingMap'), { ssr: false });
 
 const Rides = () => {
     const [rides, setRides] = useState<any[]>([]);
-    const [selectedRide, setSelectedRide] = useState<any>(null); // Store the selected ride
+    const [selectedRide, setSelectedRide] = useState<any>(null);
     const [userLocation, setUserLocation] = useState<{ lat: number, lng: number } | null>(null);
-    const [sortBy, setSortBy] = useState<string[]>([]); // Array for multiple sort options
-    // const [rangeValue, setRangeValue] = useState<number>(1); // Default range is 1km
-    const [origin, setOrigin] = useState<string>(''); // Origin input
-    const [destination, setDestination] = useState<string>(''); // Destination input
-    const [minFare, setMinFare] = useState<number>(0); // Min fare range
-    const [maxFare, setMaxFare] = useState<number>(100); // Max fare range
-    const [vehicleType, setVehicleType] = useState<string>(''); // Vehicle type
-    const [totalPassengers, setTotalPassengers] = useState<number>(1); // Total passengers
-    const [genderPreference, setGenderPreference] = useState<string>(''); // Gender preference
-    const [ageRange, setAgeRange] = useState<string>(''); // Age range preference
-    const [institution, setInstitution] = useState<string>(''); // Institution preference
-    const [rideTimeFrom, setRideTimeFrom] = useState<string>(''); // Ride time "from"
-    const [rideTimeTo, setRideTimeTo] = useState<string>(''); // Ride time "to"
-    const { data: session } = useSession(); // Getting session data (which contains the user)
+    const [sortBy, setSortBy] = useState<string[]>([]);
+    const [origin, setOrigin] = useState<string>('');
+    const [destination, setDestination] = useState<string>('');
+    const [minFare, setMinFare] = useState<number>(0);
+    const [maxFare, setMaxFare] = useState<number>(100);
+    const [vehicleType, setVehicleType] = useState<string>('');
+    const [totalPassengers, setTotalPassengers] = useState<number>(1);
+    const [genderPreference, setGenderPreference] = useState<string>('');
+    const [ageRange, setAgeRange] = useState<string>('');
+    const [institution, setInstitution] = useState<string>('');
+    const [rideTimeFrom, setRideTimeFrom] = useState<string>('');
+    const [rideTimeTo, setRideTimeTo] = useState<string>('');
+    const { data: session } = useSession();
 
     useEffect(() => {
         const fetchRides = async () => {
@@ -61,7 +57,7 @@ const Rides = () => {
     }, [sortBy, minFare, maxFare, vehicleType, totalPassengers, genderPreference, ageRange, institution, rideTimeFrom, rideTimeTo, origin, destination]);
 
     const handleRideClick = (ride: any) => {
-        setSelectedRide(ride); // Set the selected ride when clicked
+        setSelectedRide(ride);
     };
 
     const handleSortChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -100,16 +96,15 @@ const Rides = () => {
     };
 
     return (
-        <div className="mt-10 p-6 bg-white shadow-md rounded-lg">
+        <div className="mt-10 p-6 bg-purple-100 shadow-md rounded-lg">
             {/* Left side: Ride List */}
             <div className="space-y-4 flex gap-10 w-full justify-stretch">
                 <div>
-                    <h1 className="text-xl font-bold mb-4">Ride Requests</h1>
+                    <h1 className="text-xl font-bold mb-4 text-purple-800">Ride Requests</h1>
 
                     {/* Origin Input */}
-                    {/* Origin Input */}
                     <div className="relative my-2">
-                        <label className="absolute top-0 left-1 -translate-y-1/2 text-xs text-gray-700 bg-white px-1">
+                        <label className="absolute top-0 left-1 -translate-y-1/2 text-xs text-purple-700 bg-white px-1">
                             Origin:
                         </label>
                         <input
@@ -117,13 +112,13 @@ const Rides = () => {
                             placeholder="Enter origin"
                             value={origin}
                             onChange={(e) => setOrigin(e.target.value)}
-                            className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                            className="mt-1 p-2 block w-full border border-purple-300 rounded-md"
                         />
                     </div>
 
                     {/* Destination Input */}
                     <div className="relative my-2">
-                        <label className="absolute top-0 left-1 -translate-y-1/2 text-xs text-gray-700 bg-white px-1">
+                        <label className="absolute top-0 left-1 -translate-y-1/2 text-xs text-purple-700 bg-white px-1">
                             Destination:
                         </label>
                         <input
@@ -131,12 +126,14 @@ const Rides = () => {
                             placeholder="Enter destination"
                             value={destination}
                             onChange={(e) => setDestination(e.target.value)}
-                            className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                            className="mt-1 p-2 block w-full border border-purple-300 rounded-md"
                         />
                     </div>
-                    <div className="flex gap-2">                    {/* Fare Range */}
+
+                    <div className="flex gap-2">
+                        {/* Fare Range */}
                         <div className="relative my-2">
-                            <label className="absolute top-0 left-1 -translate-y-1/2 text-xs text-gray-700 bg-white px-1">
+                            <label className="absolute top-0 left-1 -translate-y-1/2 text-xs text-purple-700 bg-white px-1">
                                 Min Fare:
                             </label>
                             <input
@@ -144,12 +141,11 @@ const Rides = () => {
                                 placeholder="Min Fare"
                                 value={minFare}
                                 onChange={(e) => setMinFare(parseFloat(e.target.value))}
-                                className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                                className="mt-1 p-2 block w-full border border-purple-300 rounded-md"
                             />
                         </div>
                         <div className="relative my-2">
-
-                            <label className="absolute top-0 left-1 -translate-y-1/2 text-xs text-gray-700 bg-white px-1 mt-2">
+                            <label className="absolute top-0 left-1 -translate-y-1/2 text-xs text-purple-700 bg-white px-1">
                                 Max Fare:
                             </label>
                             <input
@@ -157,7 +153,7 @@ const Rides = () => {
                                 placeholder="Max Fare"
                                 value={maxFare}
                                 onChange={(e) => setMaxFare(parseFloat(e.target.value))}
-                                className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                                className="mt-1 p-2 block w-full border border-purple-300 rounded-md"
                             />
                         </div>
                     </div>
@@ -167,18 +163,19 @@ const Rides = () => {
                         <select
                             value={vehicleType}
                             onChange={(e) => setVehicleType(e.target.value)}
-                            className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                            className="mt-1 p-2 block w-full border border-purple-300 text-sm rounded-md"
                         >
-                            <option value="">No preference</option>
+                            <option value="">Select Vehicle Type</option>
                             <option value="AutoRickshaw">AutoRickshaw</option>
-                            <option value="Premier">Premier</option>
-                            <option value="SplitGOXL">SplitGOXL</option>
+                            <option value="CNG">CNG</option>
+                            <option value="Car">Car</option>
+                            <option value="Hicks">Hicks</option>
                         </select>
                     </div>
 
                     {/* Total Passengers */}
                     <div className="relative my-2">
-                        <label className="absolute top-0 left-1 -translate-y-1/2 text-xs text-gray-700 bg-white px-1">
+                        <label className="absolute top-0 left-1 -translate-y-1/2 text-xs text-purple-700 bg-white px-1">
                             Total Passengers:
                         </label>
                         <input
@@ -186,7 +183,7 @@ const Rides = () => {
                             value={totalPassengers}
                             onChange={(e) => setTotalPassengers(parseInt(e.target.value))}
                             required
-                            className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                            className="mt-1 p-2 block w-full border border-purple-300 rounded-md"
                         />
                     </div>
 
@@ -195,7 +192,7 @@ const Rides = () => {
                         <select
                             value={genderPreference}
                             onChange={(e) => setGenderPreference(e.target.value)}
-                            className="mt-1 p-2 block w-full border border-gray-300 rounded-md text-sm"
+                            className="mt-1 p-2 block w-full border border-purple-300 rounded-md text-sm"
                         >
                             <option value="">Gender Preference</option>
                             <option value="Male">Male</option>
@@ -209,7 +206,7 @@ const Rides = () => {
                         <select
                             value={ageRange}
                             onChange={(e) => setAgeRange(e.target.value)}
-                            className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                            className="mt-1 p-2 block w-full border border-purple-300 rounded-md"
                         >
                             <option value="">Age Preference:</option>
                             <option value="18-25">18-25</option>
@@ -222,14 +219,14 @@ const Rides = () => {
 
                     {/* Institution Preference */}
                     <div className="relative my-2">
-                        <label className="absolute top-0 left-1 -translate-y-1/2 text-xs text-gray-700 bg-white px-1">
+                        <label className="absolute top-0 left-1 -translate-y-1/2 text-xs text-purple-700 bg-white px-1">
                             Institution Preference (Optional):
                         </label>
                         <input
                             type="text"
                             value={institution}
                             onChange={(e) => setInstitution(e.target.value)}
-                            className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                            className="mt-1 p-2 block w-full border border-purple-300 rounded-md"
                         />
                     </div>
 
@@ -240,7 +237,7 @@ const Rides = () => {
                                 type="datetime-local"
                                 value={rideTimeFrom}
                                 onChange={(e) => setRideTimeFrom(e.target.value)}
-                                className="mt-1 p-2 block w-full border border-gray-300 rounded-md text-sm"
+                                className="mt-1 p-2 block w-full border border-purple-300 rounded-md text-sm"
                             />
                         </div>
 
@@ -249,21 +246,19 @@ const Rides = () => {
                                 type="datetime-local"
                                 value={rideTimeTo}
                                 onChange={(e) => setRideTimeTo(e.target.value)}
-                                className="mt-1 p-2 block w-full border border-gray-300 rounded-md text-sm"
+                                className="mt-1 p-2 block w-full border border-purple-300 rounded-md text-sm"
                             />
                         </div>
-
                     </div>
 
-
                     {/* List of rides */}
-
                 </div>
                 <div>
                     {rides.map((ride) => (
-                        <>        {/* Sorting options */}
+                        <>
+                            {/* Sorting options */}
                             <div className="mb-4">
-                                <label className="block mb-2 font-semibold">Sort By:</label>
+                                <label className="block mb-2 font-semibold text-purple-800">Sort By:</label>
                                 <label><input type="checkbox" value="gender" onChange={handleSortChange} /> Gender</label>
                                 <label><input type="checkbox" value="age" onChange={handleSortChange} /> Age Range</label>
                                 <label><input type="checkbox" value="fare" onChange={handleSortChange} /> Fare Range</label>
@@ -272,10 +267,10 @@ const Rides = () => {
                             </div>
                             <div
                                 key={ride.request_id}
-                                className={`p-4 mb-2 bg-white rounded-lg shadow-md cursor-pointer ${selectedRide?.request_id === ride.request_id ? 'bg-blue-100' : ''}`}
+                                className={`p-4 mb-2 bg-white rounded-lg shadow-md cursor-pointer ${selectedRide?.request_id === ride.request_id ? 'bg-purple-200' : ''}`}
                                 onClick={() => handleRideClick(ride)}
                             >
-                                <h3 className="text-lg font-semibold">Ride Request {ride.request_id}</h3>
+                                <h3 className="text-lg font-semibold text-purple-800">Ride Request {ride.request_id}</h3>
                                 <p>Origin: {ride.origin}</p>
                                 <p>Destination: {ride.destination}</p>
                                 <p>Fare: ${ride.total_fare}</p>
@@ -286,7 +281,7 @@ const Rides = () => {
                                 <button
                                     onClick={() => handleAcceptRide(ride.request_id)}
                                     disabled={ride.total_accepted >= ride.total_passengers}
-                                    className="bg-green-500 text-white p-2 mt-2 rounded"
+                                    className="bg-purple-600 text-white p-2 mt-2 rounded hover:bg-purple-700"
                                 >
                                     {ride.total_accepted >= ride.total_passengers ? 'Ride Full' : 'Accept Ride'}
                                 </button>
@@ -295,28 +290,6 @@ const Rides = () => {
                     ))}
                 </div>
             </div>
-            {/* Right side: Map */}
-            {/* <div className="w-2/3 p-4">
-                {selectedRide ? (
-                    <RideListingMap
-                        originLat={selectedRide.origin_lat}
-                        originLng={selectedRide.origin_lng}
-                        destinationLat={selectedRide.destination_lat}
-                        destinationLng={selectedRide.destination_lng}
-                    />
-                ) : (
-                    userLocation && (
-                        <RideListingMap
-                            originLat={userLocation.lat}
-                            originLng={userLocation.lng}
-                            destinationLat={userLocation.lat}
-                            destinationLng={userLocation.lng}
-                        />
-                    )
-                )}
-            </div> */}
-
-
         </div>
     );
 };

@@ -115,60 +115,32 @@ const RideRequestForm = () => {
     // };
 
     return (
-        <div className="mt-10 p-6 bg-white shadow-md rounded-lg">
+        <div className="mt-10 p-6 bg-purple-100 shadow-md rounded-lg">
             <form onSubmit={handleSubmit} className="space-y-4 flex gap-10 w-full justify-stretch">
                 <div>
                     <div className="relative flex justify-center items-center gap-2">
                         <input
                             type="text"
                             value={origin}
-                            // onChange={(e) => handleLocationChange(e, setOriginInput, setOriginSuggestions)}
                             onChange={(e) => setOrigin(e.target.value)}
                             placeholder="Pick up location"
-                            className="mt-1 p-2 block w-full border border-gray-300 rounded-md pr-10"
+                            className="mt-1 p-2 block w-full border border-purple-300 rounded-md pr-10"
                         />
-                        {/* {originSuggestions.length > 0 && (
-                            <ul className="absolute left-0 right-0 bg-white shadow-lg border border-gray-300 mt-2 rounded-md max-h-40 overflow-y-auto z-10">
-                                {originSuggestions.map((place) => (
-                                    <li
-                                        key={place.place_id}
-                                        onClick={() => handleSelectLocation(place, setOrigin, setOriginInput, setOriginSuggestions)}
-                                        className="p-2 hover:bg-gray-100 cursor-pointer"
-                                    >
-                                        {place.formatted_address}
-                                    </li>
-                                ))}
-                            </ul>
-                        )} */}
                     </div>
 
                     <div className="relative flex justify-center items-center gap-2">
                         <input
                             type="text"
                             value={destination}
-                            // onChange={(e) => handleLocationChange(e, setDestinationInput, setDestinationSuggestions)}
                             onChange={(e) => setDestination(e.target.value)}
                             placeholder="Enter destination"
-                            className="mt-1 p-2 block w-full border border-gray-300 rounded-md pr-10"
+                            className="mt-1 p-2 block w-full border border-purple-300 rounded-md pr-10"
                         />
-                        {/* {destinationSuggestions.length > 0 && (
-                            <ul className="absolute left-0 right-0 bg-white shadow-lg border border-gray-300 mt-2 rounded-md max-h-40 overflow-y-auto z-10">
-                                {destinationSuggestions.map((place) => (
-                                    <li
-                                        key={place.place_id}
-                                        onClick={() => handleSelectLocation(place, setDestination, setDestinationInput, setDestinationSuggestions)}
-                                        className="p-2 hover:bg-gray-100 cursor-pointer"
-                                    >
-                                        {place.formatted_address}
-                                    </li>
-                                ))}
-                            </ul>
-                        )} */}
                     </div>
 
                     {/* Fare Input */}
                     <div className="relative my-4">
-                        <label className="absolute top-0 left-1 -translate-y-1/2 text-xs text-gray-700 bg-white px-1">
+                        <label className="absolute top-0 left-1 -translate-y-1/2 text-xs text-purple-700 bg-white px-1">
                             Fare:
                         </label>
                         <input
@@ -176,7 +148,7 @@ const RideRequestForm = () => {
                             value={fare}
                             onChange={(e) => setFare(parseFloat(e.target.value))}
                             required
-                            className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                            className="mt-1 p-2 block w-full border border-purple-300 rounded-md"
                         />
                     </div>
 
@@ -185,17 +157,18 @@ const RideRequestForm = () => {
                         <select
                             value={vehicleType}
                             onChange={(e) => setVehicleType(e.target.value)}
-                            className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                            className="mt-1 p-2 block w-full border border-purple-300 rounded-md"
                         >
                             <option value="AutoRickshaw">AutoRickshaw</option>
-                            <option value="Premier">Premier</option>
-                            <option value="SplitGOXL">SplitGOXL</option>
+                            <option value="CNG">CNG</option>
+                            <option value="Car">Car</option>
+                            <option value="Hicks">Hicks</option>
                         </select>
                     </div>
 
                     {/* Total Passengers Input */}
                     <div className="relative my-4">
-                        <label className="absolute top-0 left-1 -translate-y-1/2 text-xs text-gray-700 bg-white px-1">
+                        <label className="absolute top-0 left-1 -translate-y-1/2 text-xs text-purple-700 bg-white px-1">
                             Total Passengers:
                         </label>
                         <input
@@ -203,7 +176,7 @@ const RideRequestForm = () => {
                             value={totalPassengers}
                             onChange={(e) => setTotalPassengers(parseInt(e.target.value))}
                             required
-                            className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                            className="mt-1 p-2 block w-full border border-purple-300 rounded-md"
                         />
                     </div>
 
@@ -212,7 +185,7 @@ const RideRequestForm = () => {
                         <select
                             value={genderPreference}
                             onChange={(e) => setGenderPreference(e.target.value)}
-                            className="mt-1 p-2 block w-full border border-gray-300 rounded-md text-sm"
+                            className="mt-1 p-2 block w-full border border-purple-300 rounded-md text-sm"
                         >
                             <option value="">Gender Preference</option>
                             <option value="Male">Male</option>
@@ -226,7 +199,7 @@ const RideRequestForm = () => {
                         <select
                             value={ageRange}
                             onChange={(e) => setAgeRange(e.target.value)}
-                            className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                            className="mt-1 p-2 block w-full border border-purple-300 rounded-md"
                         >
                             <option value="">Age Preference:</option>
                             <option value="18-25">18-25</option>
@@ -239,14 +212,14 @@ const RideRequestForm = () => {
 
                     {/* Institution Preference Input */}
                     <div className="relative my-4">
-                        <label className="absolute top-0 left-1 -translate-y-1/2 text-xs text-gray-700 bg-white px-1">
+                        <label className="absolute top-0 left-1 -translate-y-1/2 text-xs text-purple-700 bg-white px-1">
                             Institution Preference (Optional):
                         </label>
                         <input
                             type="text"
                             value={institution}
                             onChange={(e) => setInstitution(e.target.value)}
-                            className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                            className="mt-1 p-2 block w-full border border-purple-300 rounded-md"
                         />
                     </div>
 
@@ -256,13 +229,13 @@ const RideRequestForm = () => {
                             type="datetime-local"
                             value={rideTime}
                             onChange={(e) => setRideTime(e.target.value)}
-                            className="mt-1 p-2 block w-full border border-gray-300 rounded-md text-sm"
+                            className="mt-1 p-2 block w-full border border-purple-300 rounded-md text-sm"
                         />
                     </div>
 
                     <button
                         type="submit"
-                        className="bg-blue-600 text-white px-4 py-2 rounded-md w-full hover:bg-blue-700 transition-colors"
+                        className="bg-purple-600 text-white px-4 py-2 rounded-md w-full hover:bg-purple-700 transition-colors"
                         disabled={loading}
                     >
                         {loading ? (
@@ -275,13 +248,7 @@ const RideRequestForm = () => {
                         )}
                     </button>
                 </div>
-
-                {/* <Map
-                    origin={origin}
-                    destination={destination}
-                    setOrigin={(location: Location) => handleMapClick(location.position, location.placeName)}
-                    setDestination={(location: Location) => handleMapClick(location.position, location.placeName)}
-                /> */}
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10231.992616335718!2d90.4236479818875!3d23.775054028669604!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c79a971e9fef%3A0x34b9f5766b58d238!2sMansura%20General%20Store!5e0!3m2!1sen!2sbd!4v1726963984807!5m2!1sen!2sbd" className="w-full" width="800" height="600" style={{ border: 0 }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
             </form>
         </div>
     );
