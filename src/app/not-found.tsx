@@ -8,10 +8,10 @@ const Notfound = () => {
     return (
         <div className='pt-36 pb-20 flex flex-col justify-center  items-center'>
             <Image src="/404.svg" alt="logo" width={500} height={500}></Image>
-            <h1 className='text-3xl font-bold m-10'>
+            <h1 className='text-2xl font-bold m-7'>
                 Developer is busy feeding his cat and forgot to develop the page!!!
             </h1>
-            <Button className='w-96 h-16 text-2xl'><Link href={'/'}>Asad is in relationship</Link></Button>
+            <Button className='w-52 h-10 text-base'><Link href={'/'}>Return Home</Link></Button>
             
         </div>
     );
