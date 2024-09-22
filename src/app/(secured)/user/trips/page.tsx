@@ -47,11 +47,6 @@ const RidesPage = () => {
         setLoading(true);
         await axios.delete(`/api/ride-requests/${requestId}`);
 
-        // Send notifications to users who accepted the ride
-        await axios.post(`/api/notifications/ride-deleted`, {
-          requestId,
-        });
-
         alert('Ride deleted successfully.');
         fetchRides();
       } catch (error) {
