@@ -30,13 +30,13 @@ const Navbar = () => {
 
         {session ? (
           <div className="flex flex-row items-center gap-4">
-            <Link href={"/create-ride"} className="text-base font-bold mb-4 md:mb-0">
+            <Link href={"/user/trips"} className="text-base font-bold mb-4 md:mb-0">
               Trip
             </Link>
 
             <Link href={"/chat-group-list"} className="text-base font-bold mb-4 md:mb-0">
               <MessageCircle></MessageCircle> </Link>
-            <Link href={"/profile"} className="text-base font-bold mb-4 md:mb-0">
+            <Link href={"/user/profile"} className="text-base font-bold mb-4 md:mb-0">
               <User2></User2> </Link>
             <Button className="w-auto" onClick={() => signOut()}>
               Sign Out
