@@ -1,28 +1,14 @@
 'use client';
 
-// import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import axios from 'axios';
-// import { Loader2, Navigation } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { Loader2 } from 'lucide-react';
-// import { LoadScript, GoogleMap, Marker } from '@react-google-maps/api';
 
-// interface Location {
-//     position: google.maps.LatLngLiteral;
-//     placeName: string;
-// }
-
-// Dynamically import the Map component with SSR disabled
-// const Map = dynamic(() => import('@/components/custionUi/Map'), { ssr: false });
 
 const RideRequestForm = () => {
     const [origin, setOrigin] = useState<string>('');
     const [destination, setDestination] = useState<string>('');
-    // const [originInput, setOriginInput] = useState('');
-    // const [destinationInput, setDestinationInput] = useState('');
-    // const [originSuggestions, setOriginSuggestions] = useState<any[]>([]);
-    // const [destinationSuggestions, setDestinationSuggestions] = useState<any[]>([]);
     const [fare, setFare] = useState(0);  // Fare input state
     const [vehicleType, setVehicleType] = useState('AutoRickshaw');  // Vehicle type state
     const [totalPassengers, setTotalPassengers] = useState(1);  // Total passengers state
@@ -31,35 +17,8 @@ const RideRequestForm = () => {
     const [institution, setInstitution] = useState('');  // Institution preference state
     const [rideTime, setRideTime] = useState('');  // Ride time input state
     const [loading, setLoading] = useState(false);  // Loading state
-    // const [droppingPinFor, setDroppingPinFor] = useState<'origin' | 'destination' | null>(null);  // Dropping pin state
     const { data: session } = useSession();  // Getting session data
 
-    // Function to handle location search using Google Maps Geocoding API
-    // const handleLocationChange = async (e: React.ChangeEvent<HTMLInputElement>, setInput: Function, setSuggestions: Function) => {
-    //     const searchQuery = e.target.value;
-    //     setInput(searchQuery);
-
-    //     if (searchQuery) {
-    //         const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${searchQuery}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`);
-    //         const data = await response.json();
-    //         setSuggestions(data.results);
-    //     } else {
-    //         setSuggestions([]);
-    //     }
-    // };
-
-    // const handleSelectLocation = (place: any, setLocation: Function, setInput: Function, setSuggestions: Function) => {
-    //     const position = {
-    //         lat: place.geometry.location.lat,
-    //         lng: place.geometry.location.lng,
-    //     };
-    //     setInput(place.formatted_address);
-    //     setLocation({
-    //         placeName: place.formatted_address,
-    //         position,
-    //     });
-    //     setSuggestions([]);
-    // };
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -74,20 +33,16 @@ const RideRequestForm = () => {
             const response = await axios.post('/api/ride-requests', {
                 userId: session?.user.id,
                 origin: origin,
-                // originLat: origin.position.lat,
-                // originLng: origin.position.lng,
                 destination: destination,
-                // destinationLat: destination.position.lat,
-                // destinationLng: destination.position.lng,
-                totalFare: fare,  // Sending fare to backend
-                vehicleType,  // Sending vehicle type to backend
-                rideTime,  // Sending ride time to backend
-                totalPassengers,  // Sending total passengers to backend
+                totalFare: fare,
+                vehicleType,
+                rideTime,
+                totalPassengers,
                 status: 'pending',
                 preferences: {
-                    gender: genderPreference,  // Sending gender preference to backend
-                    ageRange,  // Sending age range to backend
-                    institution,  // Sending institution preference to backend
+                    gender: genderPreference,
+                    ageRange,
+                    institution,
                 },
             });
 
@@ -103,16 +58,6 @@ const RideRequestForm = () => {
 
         setLoading(false);
     };
-
-    // const handleMapClick = (latlng: google.maps.LatLngLiteral, placeName: string) => {
-    //     if (droppingPinFor === 'origin') {
-    //         setOrigin({ position: latlng, placeName });
-    //         setOriginInput(placeName);
-    //     } else if (droppingPinFor === 'destination') {
-    //         setDestination({ position: latlng, placeName });
-    //         setDestinationInput(placeName);
-    //     }
-    // };
 
     return (
         <div className="mt-10 p-6 bg-purple-100 shadow-md rounded-lg">
