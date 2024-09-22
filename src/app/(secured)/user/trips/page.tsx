@@ -16,8 +16,6 @@ interface RideRequest {
   status: string;
 }
 
-
-
 const RidesPage = () => {
   const { data: session } = useSession();
   const [createdRides, setCreatedRides] = useState<RideRequest[]>([]);
@@ -65,54 +63,26 @@ const RidesPage = () => {
     }
   };
 
-  const handleEditRide = async (ride: RideRequest) => {
-    const newOrigin = prompt('Enter new origin:', ride.origin);
-    const newDestination = prompt('Enter new destination:', ride.destination);
-
-    if (newOrigin && newDestination) {
+  const handleRejectRide = async (requestId: number) => {
+    if (confirm('Are you sure you want to reject this ride?')) {
       try {
         setLoading(true);
-        await axios.put(`/api/ride-requests/${ride.request_id}`, {
-          origin: newOrigin,
-          destination: newDestination,
-        });
-
-        // Send notifications to users who accepted the ride
-        await axios.post(`/api/notifications/ride-edited`, {
-          requestId: ride.request_id,
-        });
-
-        alert('Ride updated successfully.');
-        fetchRides();
-      } catch (error) {
-        console.error('Error editing ride:', error);
-        alert('Failed to update the ride.');
-      } finally {
-        setLoading(false);
-      }
-    }
-  };
-
-  const handleUnacceptRide = async (requestId: number) => {
-    if (confirm('Are you sure you want to unaccept this ride?')) {
-      try {
-        setLoading(true);
-        await axios.post(`/api/ride-requests/unaccept`, {
+        await axios.post(`/api/ride-requests/reject`, {
           requestId,
           userId: session?.user.id,
         });
 
-        // Send notifications to the creator of the ride
-        await axios.post(`/api/notifications/ride-unaccepted`, {
+        // Send notifications to all participants about the rejection
+        await axios.post(`/api/notifications/ride-rejected`, {
           requestId,
           userId: session?.user.id,
         });
 
-        alert('You have unaccepted the ride.');
+        alert('You have rejected the ride.');
         fetchRides();
       } catch (error) {
-        console.error('Error unaccepting ride:', error);
-        alert('Failed to unaccept the ride.');
+        console.error('Error rejecting the ride:', error);
+        alert('Failed to reject the ride.');
       } finally {
         setLoading(false);
       }
@@ -137,12 +107,6 @@ const RidesPage = () => {
                 <p><strong>Ride Time:</strong> {new Date(ride.ride_time).toLocaleString()}</p>
                 <p><strong>Status:</strong> {ride.status}</p>
                 <div className="flex space-x-4 mt-2">
-                  <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                    onClick={() => handleEditRide(ride)}
-                  >
-                    Edit Ride
-                  </button>
                   <button
                     className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
                     onClick={() => handleDeleteRide(ride.request_id)}
@@ -172,10 +136,10 @@ const RidesPage = () => {
                 <p><strong>Status:</strong> {ride.status}</p>
                 <button
                   className="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600 mt-2"
-                  onClick={() => handleUnacceptRide(ride.request_id)}
+                  onClick={() => handleRejectRide(ride.request_id)}
                   disabled={loading}
                 >
-                  Unaccept Ride
+                  Reject Ride
                 </button>
               </li>
             ))}
