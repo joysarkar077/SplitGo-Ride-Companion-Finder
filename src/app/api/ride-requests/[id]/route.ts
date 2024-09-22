@@ -1,111 +1,74 @@
-// app/api/ride-requests/[id]/route.ts
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 import dbConnection from '@/lib/dbConnection';
-import { RowDataPacket, ResultSetHeader } from 'mysql2';
 
-export const DELETE = async (req: NextApiRequest, res: NextApiResponse) => {
-    const { id } = req.query;
+export const DELETE = async (request: NextRequest) => {
     const connection = await dbConnection();
+    const requestId = request.url.split('/').pop();  // Extract requestId from URL
+
+    if (!requestId) {
+        return NextResponse.json({ success: false, message: 'Missing request ID' }, { status: 400 });
+    }
 
     try {
-        // Begin a transaction
-        await connection.beginTransaction();
+        // Step 1: Delete ride preferences associated with the ride request
+        await connection.execute('DELETE FROM ride_preferences WHERE request_id = ?', [requestId]);
 
-        // Delete the ride request from the ride_requests table
-        await connection.execute<ResultSetHeader>(`DELETE FROM ride_requests WHERE request_id = ?`, [id]);
+        // Step 2: Delete participants in the ride request
+        await connection.execute('DELETE FROM ride_participants WHERE request_id = ?', [requestId]);
 
-        // Find the participants of the ride
-        const [participants] = await connection.execute<RowDataPacket[]>(`SELECT passenger_id FROM ride_participants WHERE request_id = ?`, [id]);
+        // First, get the chat group name associated with the ride request
+        const [chatGroup]: any[] = await connection.execute('SELECT group_name FROM chat_groups WHERE request_id = ?', [requestId]);
 
-        // Delete the participants from the ride_participants table
-        await connection.execute<ResultSetHeader>(`DELETE FROM ride_participants WHERE request_id = ?`, [id]);
+        if (chatGroup.length > 0) {
+            const groupName = chatGroup[0].group_name;
 
-        // Send notifications to the participants that the ride was deleted
-        for (const participant of participants) {
-            await connection.execute<ResultSetHeader>(
-                `INSERT INTO notifications (user_id, message) VALUES (?, ?)`,
-                [participant.passenger_id, `The ride you accepted has been deleted.`]
-            );
+            // Step 3: Delete messages associated with the chat group
+            await connection.execute('DELETE FROM messages WHERE group_name = ?', [groupName]);
+
+            // Step 4: Delete participants in the chat group
+            await connection.execute('DELETE FROM chat_group_participants WHERE group_name = ?', [groupName]);
+
+            // Step 5: Delete the chat group itself
+            await connection.execute('DELETE FROM chat_groups WHERE group_name = ?', [groupName]);
         }
 
-        // Commit transaction
-        await connection.commit();
+        // Step 6: Finally, delete the ride request
+        await connection.execute('DELETE FROM ride_requests WHERE request_id = ?', [requestId]);
 
-        res.status(200).json({ success: true, message: 'Ride request deleted successfully.' });
+        return NextResponse.json({ success: true, message: 'Ride and chat group deleted successfully' }, { status: 200 });
     } catch (error) {
-        console.error('Error deleting ride request:', error);
-        await connection.rollback();
-        res.status(500).json({ success: false, error: 'Failed to delete ride request.' });
+        console.error('Error deleting ride:', error);
+        return NextResponse.json({ success: false, message: 'Error deleting ride' }, { status: 500 });
     }
 };
 
 
-export const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
-    const { id } = req.query;
-    const { origin, destination } = req.body;
+export const POST = async (request: NextRequest) => {
     const connection = await dbConnection();
+    const { requestId, userId } = await request.json();
+
+    if (!requestId || !userId) {
+        return NextResponse.json({ success: false, message: 'Missing parameters' }, { status: 400 });
+    }
 
     try {
-        // Begin a transaction
-        await connection.beginTransaction();
+        // Remove the rejecting user from the chat group
+        await connection.execute('DELETE FROM chat_group_participants WHERE group_name = (SELECT group_name FROM chat_groups WHERE request_id = ?) AND user_id = ?', [requestId, userId]);
 
-        // Update the ride request in the ride_requests table
-        await connection.execute<ResultSetHeader>(
-            `UPDATE ride_requests SET origin = ?, destination = ? WHERE request_id = ?`,
-            [origin, destination, id]
-        );
+        // Get the list of participants to notify them about the rejection
+        const [participants]: any[] = await connection.execute('SELECT passenger_id FROM ride_participants WHERE request_id = ?', [requestId]);
 
-        // Find the participants of the ride
-        const [participants] = await connection.execute<RowDataPacket[]>(`SELECT passenger_id FROM ride_participants WHERE request_id = ?`, [id]);
+        // Notify all participants about the rejection
+        await Promise.all(participants.map(async (participant: { passenger_id: number }) => {
+            await connection.execute('INSERT INTO notifications (user_id, message) VALUES (?, ?)', [participant.passenger_id, 'A participant has rejected the ride.']);
+        }));
 
-        // Send notifications to the participants that the ride was updated
-        for (const participant of participants) {
-            await connection.execute<ResultSetHeader>(
-                `INSERT INTO notifications (user_id, message) VALUES (?, ?)`,
-                [participant.passenger_id, `The ride you accepted has been updated. Please check the new details.`]
-            );
-        }
+        // Remove the rejecting user from ride participants
+        await connection.execute('DELETE FROM ride_participants WHERE request_id = ? AND passenger_id = ?', [requestId, userId]);
 
-        // Commit transaction
-        await connection.commit();
-
-        res.status(200).json({ success: true, message: 'Ride updated successfully.' });
+        return NextResponse.json({ success: true, message: 'Rejected the ride and removed from the chat group' }, { status: 200 });
     } catch (error) {
-        console.error('Error updating ride request:', error);
-        await connection.rollback();
-        res.status(500).json({ success: false, error: 'Failed to update ride request.' });
+        console.error('Error rejecting ride:', error);
+        return NextResponse.json({ success: false, message: 'Error rejecting ride' }, { status: 500 });
     }
 };
-
-
-export const POST = async (req: NextApiRequest, res: NextApiResponse) => {
-    const { requestId, userId } = await req.body;
-    const connection = await dbConnection();
-
-    try {
-        // Begin a transaction
-        await connection.beginTransaction();
-
-        // Remove the user from the ride participants
-        await connection.execute<ResultSetHeader>(`DELETE FROM ride_participants WHERE request_id = ? AND passenger_id = ?`, [requestId, userId]);
-
-        // Notify the creator of the ride that the user has unaccepted the ride
-        const [creator] = await connection.execute<RowDataPacket[]>(`SELECT user_id FROM ride_requests WHERE request_id = ?`, [requestId]);
-        if (creator.length > 0) {
-            await connection.execute<ResultSetHeader>(
-                `INSERT INTO notifications (user_id, message) VALUES (?, ?)`,
-                [creator[0].user_id, `A passenger has unaccepted your ride.`]
-            );
-        }
-
-        // Commit transaction
-        await connection.commit();
-
-        res.status(200).json({ success: true, message: 'Unaccepted the ride successfully.' });
-    } catch (error) {
-        console.error('Error unaccepting the ride:', error);
-        await connection.rollback();
-        res.status(500).json({ success: false, error: 'Failed to unaccept the ride.' });
-    }
-};
-

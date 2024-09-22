@@ -28,35 +28,6 @@ CREATE TABLE ride_requests (
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
 
-CREATE TABLE ride_requests (
-    request_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT, -- The user who created the ride request
-    origin VARCHAR(255),
-    origin_lat DECIMAL(10, 8), -- latitude of the origin
-    origin_lng DECIMAL(11, 8), -- longitude of the origin
-    destination VARCHAR(255),
-    destination_lat DECIMAL(10, 8), -- latitude of the destination
-    destination_lng DECIMAL(11, 8), -- longitude of the destination
-    total_fare DECIMAL(10, 2),
-    vehicle_type ENUM(
-        'AutoRickshaw',
-        'Premier',
-        'SplitGOXL'
-    ),
-    total_passengers INT,
-    total_accepted INT,
-    ride_time TIMESTAMP,
-    status ENUM(
-        'pending',
-        'accepted',
-        'completed',
-        'cancelled'
-    ),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users (user_id)
-);
-
 -- Ride Participants Table
 CREATE TABLE ride_participants (
     request_id INT,
