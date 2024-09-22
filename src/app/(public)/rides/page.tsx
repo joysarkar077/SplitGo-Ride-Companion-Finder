@@ -2,6 +2,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 
 const Rides = () => {
@@ -21,6 +22,7 @@ const Rides = () => {
     const [rideTimeFrom, setRideTimeFrom] = useState<string>('');
     const [rideTimeTo, setRideTimeTo] = useState<string>('');
     const { data: session } = useSession();
+    const router = useRouter();
 
     useEffect(() => {
         const fetchRides = async () => {
@@ -75,6 +77,10 @@ const Rides = () => {
     };
 
     const handleAcceptRide = async (requestId: number) => {
+        if (!session?.user?.id) {
+            alert('Please sign in to accept a ride');
+            router.replace('/sign-in');
+        }
         const response = await axios.post('/api/accept-ride-requests', {
             requestId,
             userId: session?.user?.id,
@@ -254,17 +260,18 @@ const Rides = () => {
                     {/* List of rides */}
                 </div>
                 <div>
+                    {/* Sorting options */}
+                    <div className="mb-4">
+                        <label className="block mb-2 font-semibold text-purple-800">Sort By:</label>
+                        <label><input type="checkbox" value="gender" onChange={handleSortChange} /> Gender</label>
+                        <label><input type="checkbox" value="age" onChange={handleSortChange} /> Age Range</label>
+                        <label><input type="checkbox" value="fare" onChange={handleSortChange} /> Fare Range</label>
+                        <label><input type="checkbox" value="origin" onChange={handleSortChange} /> Origin</label>
+                        <label><input type="checkbox" value="destination" onChange={handleSortChange} /> Destination</label>
+                    </div>
                     {rides.map((ride) => (
                         <>
-                            {/* Sorting options */}
-                            <div className="mb-4">
-                                <label className="block mb-2 font-semibold text-purple-800">Sort By:</label>
-                                <label><input type="checkbox" value="gender" onChange={handleSortChange} /> Gender</label>
-                                <label><input type="checkbox" value="age" onChange={handleSortChange} /> Age Range</label>
-                                <label><input type="checkbox" value="fare" onChange={handleSortChange} /> Fare Range</label>
-                                <label><input type="checkbox" value="origin" onChange={handleSortChange} /> Origin</label>
-                                <label><input type="checkbox" value="destination" onChange={handleSortChange} /> Destination</label>
-                            </div>
+
                             <div
                                 key={ride.request_id}
                                 className={`p-4 mb-2 bg-white rounded-lg shadow-md cursor-pointer ${selectedRide?.request_id === ride.request_id ? 'bg-purple-200' : ''}`}
