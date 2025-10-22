@@ -18,8 +18,8 @@ This is a project for a academic course. The project aims to help users find a r
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/IstiakImran/cse370_project.git
-   cd cse370_project
+   git clone [https://github.com/IstiakImran/cse370_project.git](https://github.com/joysarkar077/SplitGo-Ride-Companion-Finder.git)
+   cd 
 
 2. Install the dependencies:
     ```bash
