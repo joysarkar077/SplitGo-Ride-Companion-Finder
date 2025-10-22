@@ -14,23 +14,6 @@ This is a project for a academic course. The project aims to help users find a r
 - **Tailwind CSS** for styling.
 
 
-## Installation
-
-1. Clone the repository:
-   ```bash
-   git clone [https://github.com/IstiakImran/cse370_project.git](https://github.com/joysarkar077/SplitGo-Ride-Companion-Finder.git)
-   cd 
-
-2. Install the dependencies:
-    ```bash
-    npm install
-
-3. Run the development server:
-    ```bash
-    npm run dev
-
-4. Open http://localhost:3000 to view it in your browser.
-
 
 ## How to Use
 - Input your current location and destination.
