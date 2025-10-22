@@ -1,7 +1,7 @@
 # SplitGo - Ride Companion Finder
 
 
-This is a project for BRAC University’s CSE370 course. The project aims to help users find a ride companion who shares the same route and enables cost-sharing for the journey.
+This is a project for a academic course. The project aims to help users find a ride companion who shares the same route and enables cost-sharing for the journey.
 
 ## Features
 - Search for ride companions traveling the same route.
